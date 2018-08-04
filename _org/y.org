@@ -1,0 +1,165 @@
+#+TITLE: Anonymous Recursive Functions
+#+DATE: <2018-08-04 Sat>
+#+AUTHOR: Nick Drozd
+#+EMAIL: nicholasdrozd@gmail.com
+#+OPTIONS: toc:nil
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.1 (Org mode 9.1.9)
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES:
+#+JEKYLL_TAGS:
+
+The [[http://oeis.org/A000217][*triangular numbers*]] are a sequence of numbers starting with 1 such that the nth triangular number is the sum of the first n positive integers. They are so called because they can be used to represent the sizes of increasingly large triangles:
+
+#+BEGIN_EXAMPLE
+,*
+triangular(1) = 1
+
+,*
+,* *
+triangular(2) = 1 + 2 = 3
+
+,*
+,* *
+,* * *
+trianngular(3) = 1 + 2 + 3 = 6
+
+,*
+,* *
+,* * *
+,* * * *
+trianngular(4) = 1 + 2 + 3 + 4 = 10
+#+END_EXAMPLE
+
+This sequence has an easy recursive characterization:
+
+#+BEGIN_SRC python
+def triangular(n):
+    if n < 2:
+        return n
+    else:
+        return n + triangular(n - 1)
+
+assert triangular(6) == 21
+#+END_SRC
+
+We handle the base case by returning =n= straight back, while in the recursive case we give back the sum of =n= and the previous triangular number. Easy, right?
+
+The recursion works because it's possible to refer to the function in its own definition. But what if that wasn't an option? There are several reasons why this might be the case. Maybe you're working in a language that doesn't allow recursive functions, like early versions of Fortran or Basic. Maybe your language supports recursion, but you don't understand how to use it. Maybe you've coded so much that you've actually used up your entire namespace, and you literally cannot define another function.
+
+In any case, the question is: how can you define a recursive function without using recursion?
+
+First, let's rewrite our function in a way that is more amenable to transformation:
+
+#+BEGIN_SRC python
+triangular = lambda n: n if n < 2 else n + triangular(n - 1)
+
+assert triangular(7) == 28
+#+END_SRC
+
+Now, that lambda expression contains a refernce to =triangular=, which we've stipulated can't be done. We need another function to replace it, but what will it be? It seems like a hard question to answer at the moment, so we'll just leave it as a lambda abstraction and figure it out later.
+
+#+BEGIN_SRC python
+lambda triangular: lambda n: n if n < 2 else n + triangular(n - 1)
+#+END_SRC
+
+Okay, so what will =triangular= be? Well, recursion involves self-reference, so maybe that function will suffice. Let's try giving it to itself:
+
+#+BEGIN_SRC python
+assert (
+    ((lambda f: f(f))
+     (lambda triangular: lambda n: n if n < 2 else n + triangular(n - 1)))
+)(8) == 36
+#+END_SRC
+
+Actually, this won't work. =triangular= gets applied to a number (=n - 1=), but it isn't a function that expects a number. Instead, it's a function that takes a function and then returns a function that expects a number. So we need to give =triangular= a function before giving it a number. Again we're faced with the question of which function to give it, and again, since we're dealing with recursion, we might as well try giving it to itself.
+
+#+BEGIN_SRC python
+assert (
+    ((lambda f: f(f))
+     (lambda triangular: lambda n: n if n < 2 else n + triangular(triangular)(n - 1)))
+)(8) == 36
+#+END_SRC
+
+Amazingly, this one works. This is all it takes to get recursion using anonymous functions, and it wasn't even all that difficult to figure it out.
+
+But still, there's something unsatisfying about this. The resulting function has something called =triangular=, but it isn't really the same one we had before. Our initial =triangular= took and returned numbers, but our new =triangular= takes a function and returns a function that takes and returns numbers. The function that it takes is...also a function that takes functions and returns a function that takes and returns numbers. The functions that that function takes are...
+
+Well, it's hard to say what kind of function it is. Anyway, what we'd really like is to take our initial recursive definition, lambda-abstract out the recursive calls, and then pass the resulting simple function into something else that will make the recursion happen (it doesn't matter how).
+
+It turns out that this is possible, but it takes some trickery. First, let's rename =triangular=, since it isn't the real =triangular=.
+
+#+BEGIN_SRC python
+((lambda f: f(f))
+ (lambda t: lambda n: n if n < 2 else n + t(t)(n - 1)))
+#+END_SRC
+
+Now, observe that in general applying a function =f= to an argument =a= with =f(a)= is equivalent to the more verbose =(lambda x: f(x))(a)=. =t(t)= is a function of one argument, so we can replace =t(t)(n - 1)= with =(lambda x: t(t)(x))(n - 1)=.
+
+#+BEGIN_SRC python
+((lambda f: f(f))
+ (lambda t: lambda n: n if n < 2 else n + (lambda x: t(t)(x))(n - 1)))
+#+END_SRC
+
+=lambda x: t(t)(x)= is a function that takes and returns a number, which is exactly what the real =triangular= is. Abstract out =lambda x: t(t)(x)= and name it =triangular=.
+
+#+BEGIN_SRC python
+((lambda f: f(f))
+ (lambda t:
+  ((lambda triangular: lambda n: n if n < 2 else n + triangular(n - 1))
+   (lambda x: t(t)(x)))))
+#+END_SRC
+
+And there it is: =lambda triangular: lambda n: n if n < 2 else n + triangular(n - 1)=. We've successfully recovered the initial =triangular=! Finally, let's rewrite the whole thing as a function that takes that function.
+
+#+BEGIN_SRC python
+assert (
+    ((lambda Y:
+      ((lambda f: f(f))
+       (lambda t:
+        (Y (lambda x: t(t)(x))))))
+     (lambda triangular: lambda n: n if n < 2 else n + triangular(n - 1)))
+)(9) == 45
+#+END_SRC
+
+This grotesque construct has a name: the Y combinator.
+
+#+BEGIN_SRC python
+y_combinator = (lambda Y:
+               ((lambda f: f(f))
+                (lambda t:
+                 (Y (lambda x: t(t)(x))))))
+
+y_tri = y_combinator(lambda triangular: lambda n: n if n < 2 else n + triangular(n - 1))
+
+assert y_tri(10) == 55
+#+END_SRC
+
+The Y combinator gives us all the recursion we need. Consider another number sequence, the [[http://oeis.org/A000292][*tetrahedral numbers*]]. These numbers are like the triangular numbers, except that whereas the nth triangular number is the sum of the first n positive integers, the nth tetrahedral number is the sum of the first n triangular numbers. Again, there is an easy recursive definition:
+
+#+BEGIN_SRC python
+def tetrahedral(n):
+    if n < 2:
+        return n
+    else:
+        return triangular(n) + tetrahedral(n - 1)
+#+END_SRC
+
+We can achieve this definition anonymously by composing calls to the Y combinator.
+
+#+BEGIN_SRC python
+assert (
+    ((lambda Y:
+      ((lambda f: f(f))
+       (lambda t:
+        (Y (lambda x: t(t)(x))))))
+     (lambda tetrahedral: lambda n: n if n < 2 else (
+         (((lambda Y:
+            ((lambda f: f(f))
+             (lambda t:
+              (Y (lambda x: t(t)(x))))))
+           (lambda triangular: lambda n: n if n < 2 else n + triangular(n - 1)))(n) + tetrahedral(n - 1)))))
+)(7) == 84
+#+END_SRC
