@@ -1,0 +1,232 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:nil todo:t |:t
+#+TITLE: Solving Logic Puzzles in Emacs with Reazon
+#+DATE: <2018-08-07 Tue>
+#+AUTHOR: Nick Drozd
+#+EMAIL: nicholasdrozd@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.1 (Org mode 9.1.9)
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES:
+#+JEKYLL_TAGS:
+
+*[[https://github.com/nickdrozd/reazon][Reazon]]* is an *Emacs* implementation of the *miniKanren* logic programming language. As of version [[https://github.com/nickdrozd/reazon/releases/tag/0.1][0.1]] it contains just a basic equality relation and no constraints. In particular, it lacks a *disequality* constraint; while it is possible to say that the value of variable =x= is =5=, it is /not/ possible to say that the value of variable =x= is /not/ =5=.
+
+With a little cleverness and some dull labor, it is sometimes possible to circumvent this limitation by expressing a negative in terms of positives. Consider the following logic puzzle[fn:1]:
+
+#+BEGIN_QUOTE
+Baker, Cooper, Fletcher, Miller, and Smith live on different floors of an apartment house that contains only five floors. Baker does not live on the top floor. Cooper does not live on the bottom floor. Fletcher does not live on either the top or the bottom floor. Miller lives on a higher floor than does Cooper. Smith does not live on a floor adjacent to Fletcher's. Fletcher does not live on a floor adjacent to Cooper's. Where does everyone live?
+#+END_QUOTE
+
+We're given that the building has exactly five floors, and our goal is to figure out the ordering of the residents in the building. We know immediately that there can only be *finitely many solutions*, so we can safely use =reazon-run*= to find all of them. Using =q= as our query variable, we can start to sketch out a solution. We'll represent the building as a list with five items, the first of which represents the bottom floor and the last of which represents the top floor.
+
+#+BEGIN_SRC emacs-lisp
+(reazon-run* q
+  ;; ...an apartment house that contains only five floors.
+  (reazon-fresh (a b c d e)
+    (reazon-== q `(,a ,b ,c ,d ,e))))
+#+END_SRC
+
+The next clue is stated as a negative: "Baker does not live on the top floor." We can't express negatives, so how can we proceed? Let's think about it without doing any programming. Where does Baker live? She[fn:2] isn't on the top (fifth) floor, so she must be on the first floor or the second floor or the third floor or the fourth floor. Well, there's our positive statement right there!
+
+#+BEGIN_SRC emacs-lisp
+(reazon-run* q
+  (reazon-fresh (a b c d e)
+    ;; Baker does not live on the top floor.
+    (reazon-disj
+     (reazon-== q `(baker ,b ,c ,d ,e))
+     (reazon-== q `(,a baker ,c ,d ,e))
+     (reazon-== q `(,a ,b baker ,d ,e))
+     (reazon-== q `(,a ,b ,c baker ,e)))))
+#+END_SRC
+
+This repetitive list of alternatives is *inelegant*, and it's *not even correct*, as it doesn't preclude the possibility of Baker's being on the fifth floor, but for now it's the best we can do. Note that this clause implies that =q= is a list of five elements, so we can actually delete our first clause.
+
+The next two clues can be handled similarly.
+
+#+BEGIN_SRC emacs-lisp
+(reazon-run* q
+  (reazon-fresh (a b c d e)
+    ;; Baker...
+    ;; Cooper does not live on the bottom floor.
+    (reazon-disj
+     (reazon-== q `(,a cooper ,c ,d ,e))
+     (reazon-== q `(,a ,b cooper ,d ,e))
+     (reazon-== q `(,a ,b ,c cooper ,e))
+     (reazon-== q `(,a ,b ,c ,d cooper)))
+    ;; Fletcher does not live on either the top or the bottom floor.
+    (reazon-disj
+     (reazon-== q `(,a fletcher ,c ,d ,e))
+     (reazon-== q `(,a ,b fletcher ,d ,e))
+     (reazon-== q `(,a ,b ,c fletcher ,e)))))
+#+END_SRC
+
+The next clue is different: "Miller lives on a higher floor than does Cooper." The general way to handle such a clue would be to write a relation like =(precedes x y s)=, meaning =x= precedes =y= in =s=. Our problem domain is small, though, so we'll just stick to primitives. This clue adds some new possibilities (if Cooper is on the second floor, Miller could be on floor three, four, or five), but it also removes some (we know Cooper can't be on the top floor).
+
+#+BEGIN_SRC emacs-lisp
+(reazon-run* q
+  (reazon-fresh (a b c d e)
+    ;; Baker...
+    (reazon-disj
+     ;; Cooper does not live on the bottom floor.
+     ;; Miller lives on a higher floor than does Cooper.
+     (reazon-== q `(,a cooper miller ,d ,e))
+     (reazon-== q `(,a cooper ,c miller ,e))
+     (reazon-== q `(,a cooper ,c ,d miller))
+     (reazon-== q `(,a ,b cooper miller ,e))
+     (reazon-== q `(,a ,b cooper ,d miller))
+     (reazon-== q `(,a ,b ,c cooper miller)))
+    ;; Fletcher...
+    ))
+#+END_SRC
+
+The final two clues both mention Fletcher, so we will handle them in the Fletcher disjunction: "Smith does not live on a floor adjacent to Fletcher's. Fletcher does not live on a floor adjacent to Cooper's." Adjancency is a symmetric relation, so we can say that neither Smith nor Cooper live on a floor adjacent to Fletcher. Thus if Fletcher lives on the second floor, neither Smith nor Cooper can live on the the first or third floors, and therefore must live on the fourth and fifth floors. These and the other cases are easy enough to add in:
+
+#+BEGIN_SRC emacs-lisp
+(reazon-run* q
+  (reazon-fresh (a b c d e)
+    ;; Baker...
+    ;; Cooper, Miller...
+    ;; Fletcher does not live on either the top or the bottom floor.
+    ;; Smith does not live on a floor adjacent to Fletcher's.
+    ;; Fletcher does not live on a floor adjacent to Cooper's.
+    (reazon-disj
+     (reazon-== q `(,a fletcher ,c smith cooper))
+     (reazon-== q `(,a fletcher ,c cooper smith))
+     (reazon-== q `(smith ,b fletcher ,d cooper))
+     (reazon-== q `(cooper ,b fletcher ,d smith))
+     (reazon-== q `(smith cooper ,c fletcher ,e))
+     (reazon-== q `(cooper smith ,c fletcher ,e)))))
+#+END_SRC
+
+Putting the pieces together, our solver yields results:
+
+#+BEGIN_SRC emacs-lisp :exports both :results verbatim
+(reazon-run* q
+  ;; ...an apartment house that contains only five floors.
+  (reazon-fresh (a b c d e)
+    ;; Baker does not live on the top floor.
+    (reazon-disj
+     (reazon-== q `(baker ,b ,c ,d ,e))
+     (reazon-== q `(,a baker ,c ,d ,e))
+     (reazon-== q `(,a ,b baker ,d ,e))
+     (reazon-== q `(,a ,b ,c baker ,e)))
+    (reazon-disj
+     ;; Cooper does not live on the bottom floor.
+     ;; Miller lives on a higher floor than does Cooper.
+     (reazon-== q `(,a cooper miller ,d ,e))
+     (reazon-== q `(,a cooper ,c miller ,e))
+     (reazon-== q `(,a cooper ,c ,d miller))
+     (reazon-== q `(,a ,b cooper miller ,e))
+     (reazon-== q `(,a ,b cooper ,d miller))
+     (reazon-== q `(,a ,b ,c cooper miller)))
+    (reazon-disj
+     ;; Fletcher does not live on either the top or the bottom floor.
+     ;; Smith does not live on a floor adjacent to Fletcher's.
+     ;; Fletcher does not live on a floor adjacent to Cooper's.
+     (reazon-== q `(,a fletcher ,c smith cooper))
+     (reazon-== q `(,a fletcher ,c cooper smith))
+     (reazon-== q `(smith ,b fletcher ,d cooper))
+     (reazon-== q `(cooper ,b fletcher ,d smith))
+     (reazon-== q `(smith cooper ,c fletcher ,e))
+     (reazon-== q `(cooper smith ,c fletcher ,e)))))
+#+END_SRC
+
+#+RESULTS:
+: ((smith cooper baker fletcher miller))
+
+In fact, it yields *exactly one solution*. If we trust the language (???), then we can conclude that there are no others.
+
+Suppose we omit the requirement that Smith and Fletcher do not live on adjacent floors. How many solutions are there then?[fn:3]
+
+#+BEGIN_SRC emacs-lisp :exports both :results verbatim
+(reazon-run* q
+  ;; ...an apartment house that contains only five floors.
+  (reazon-fresh (a b c d e)
+    ;; Baker does not live on the top floor.
+    (reazon-disj
+     (reazon-== q `(baker ,b ,c ,d ,e))
+     (reazon-== q `(,a baker ,c ,d ,e))
+     (reazon-== q `(,a ,b baker ,d ,e))
+     (reazon-== q `(,a ,b ,c baker ,e)))
+    (reazon-disj
+     ;; Cooper does not live on the bottom floor.
+     ;; Miller lives on a higher floor than does Cooper.
+     (reazon-== q `(,a cooper miller ,d ,e))
+     (reazon-== q `(,a cooper ,c miller ,e))
+     (reazon-== q `(,a cooper ,c ,d miller))
+     (reazon-== q `(,a ,b cooper miller ,e))
+     (reazon-== q `(,a ,b cooper ,d miller))
+     (reazon-== q `(,a ,b ,c cooper miller)))
+    (reazon-disj
+     ;; Fletcher does not live on either the top or the bottom floor.
+     ;; Fletcher does not live on a floor adjacent to Cooper's.
+     (reazon-== q `(,a fletcher ,c ,d cooper))
+     (reazon-== q `(,a fletcher ,c cooper ,e))
+     (reazon-== q `(,a ,b fletcher ,d cooper))
+     (reazon-== q `(cooper ,b fletcher ,d ,e))
+     (reazon-== q `(,a cooper ,c fletcher ,e))
+     (reazon-== q `(cooper ,b ,c fletcher ,e)))
+    ;; Smith's floor is not restricted.
+    (reazon-disj
+     (reazon-== q `(smith ,b ,c ,d ,e))
+     (reazon-== q `(,a smith ,c ,d ,e))
+     (reazon-== q `(,a ,b smith ,d ,e))
+     (reazon-== q `(,a ,b ,c smith ,e))
+     (reazon-== q `(,a ,b ,c ,d smith)))))
+#+END_SRC
+
+#+RESULTS:
+: ((baker cooper miller fletcher smith) (baker cooper smith fletcher miller) (baker fletcher smith cooper miller) (smith cooper baker fletcher miller) (smith fletcher baker cooper miller))
+
+This time there are five results.[fn:4]
+
+Now, you might say: we basically solved the problem ourselves by explicitly typing out the possibilities, so *what's the point of using miniKanren at all?*
+
+First, this was not meant to be an example of good miniKanren programming technique, but rather a demonstration that a certain class of problem is in principle within the grasp of Reazon 0.1. Second, even with just the cases laid out in the final form of the solver, it would /still/ be a pain to have to settle the problem manually, so miniKanren really did help us in the end.
+
+Finally, let's take a step back and look at the outline of our solver. In general, a query of the form
+
+#+BEGIN_SRC emacs-lisp
+(reazon-run* q
+  goal-1
+  ;; ...
+  goal-n)
+#+END_SRC
+
+will attempt to find values for =q= satisfying all of =goal-1= ... =goal-n=. This is equivalent to querying against the single goal that is the conjunction of all those goals.
+
+#+BEGIN_SRC emacs-lisp
+(reazon-run* q
+  (reazon-conj
+   goal-1
+   ;; ...
+   goal-n))
+#+END_SRC
+
+In our solver, all the goals are disjunctions, so this looks like
+
+#+BEGIN_SRC emacs-lisp
+(reazon-run* q
+  (reazon-conj
+   (reazon-disj goal-1-1 ... goal-1-n)
+   ;; ...
+   (reazon-disj goal-n-1 ... goal-n-n)))
+#+END_SRC
+
+In other words, our solver is a conjunction of disjunctions. This is what logicians call */[[https://en.wikipedia.org/wiki/Conjunctive_normal_form][conjunctive normal form]]/*.
+
+* Footnotes
+
+[fn:1] This problem is used as an example in [[https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-28.html#%25_sec_4.3.2][SICP section 4.3.2]] to illustrate the advantages of a [[https://en.wikipedia.org/wiki/Nondeterministic_programming][nondeterministic]] variant of Scheme. Their solution is quite different from the one presented here.
+
+[fn:2] The writer(s) of this puzzle probably assumed that these names referred to men. In contrast, I assume that "Baker" is actually smooth jazz legend [[https://en.wikipedia.org/wiki/Anita_Baker][Anita Baker]].
+
+[fn:3] This is [[https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-28.html#%25_thm_4.38][SICP exercise 4.38]].
+
+[fn:4] Just to be sure, I checked these answers against those of [[https://eli.thegreenplace.net/2008/01/05/sicp-section-432][Eli Bendersky]]. Somehow his answers came out in the same order as these ones. Why is that?
