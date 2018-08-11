@@ -1,0 +1,57 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
+#+TITLE: Proving the Second Incompleteness Theorem from the First
+#+DATE: <2018-08-13 Mon>
+#+AUTHOR: Nick Drozd
+#+EMAIL: nicholasdrozd@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.1 (Org mode 9.1.9)
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES:
+#+JEKYLL_TAGS:
+
+*Goedel's first incompleteness theorem* is the claim that any sound, consistent formal system of sufficient power is incomplete; that is, there are statements in the language of the system that can neither be proved nor disproved. Traditionally the theorem is proved by exhbiting a statement /g/ which is provably equivalent to a statement encoding its own disprovability in the system /S/.
+
+Suppose there were a proof of /g/ in /S/. By hypothesis, /S/ is of sufficient strength to represent the provability of its own theorems, and so it would also be possible to prove that /g/ was provable. But /g/ implies that it is not provable, which is a contradiction.
+
+On the other hand, suppose that /g/ were disprovable, i.e. that its negation were provable. /S/ would similarly be able to prove that there was a proof of the negation of /g/. But just as /g/ is provably equivalent to its non-provability, so is its negation provably equivalent to the provability of /g/. /S/ would therefore prove that there was a proof of /g/ and also of its negation. This is not a contradiction, but it does violate the hypothesis of the soundness of /S/. Therefore, /g/ is neither provable nor disprovable in /S/.
+
+The *second incompleteness theorem* is the claim that no consistent formal system of sufficient power can prove its own consistency. Using modal logic, this can easily be derived from the first incompleteness theorem (actually, just from the existence of /g/).
+
+First, some notation. We'll use the turnstile =⊢ ϕ= to mean that /ϕ/ is provable (in /S/) and the box =◻ϕ= to mean that there is (an /S/-encoding of) a proof of /ϕ/.
+
+With this notation, the existence of /g/ can be represented as follows:
+
+#+BEGIN_SRC
+⊢ g ↔ ¬◻g
+#+END_SRC
+
+Second, some axioms. When we say that /S/ is "sufficiently powerful", we mean that it can represent and reason about its own proofs. Besides being able to prove all of classical propositional logic, the following are required:
+
+1. /S/ can prove its own theorems: if /ϕ/ is provable in /S/, then it is also provable in /S/ that there is a proof of /ϕ/.
+2. /S/ can prove /modus ponens/: it can be proved in /S/ that it if there is a proof that /ψ/ follows from /ϕ/, then if there is a proof of /ϕ/, there is a proof of /ψ/.
+3. /S/ can prove (1): it can be proved in /S/ that if there is a proof of /ϕ/, then there is a proof that there is a proof of /ϕ/.
+
+In symbols:
+
+1. If =⊢ ϕ=, then =⊢ ◻ϕ=
+2. =⊢ ◻(ϕ → ψ) → ◻ϕ → ◻ψ=
+3. =⊢ ◻ϕ → ◻◻ϕ=
+
+   # This is indented to preserve the numbering of (4). Couldn't get [@4] to work.
+  From these, we can derive another rule:
+
+4. If =⊢ ϕ → ψ=, then =⊢ ◻ϕ → ◻ψ=.
+
+For =⊢ ◻(ϕ → ψ)= by (1), and if we assume =⊢ ◻ϕ=, then by (2) we get =⊢ ◻ψ=.
+
+Again, from the first incompleteness theorem we have =⊢ g ↔ ¬◻g=. By basic propositional logic, we get =⊢ g → ◻g → ⊥=, and by (4), =⊢ ◻g → ◻◻g → ◻⊥=. =⊢ ◻g → ◻◻g= by (3), so =⊢ ◻g → ◻⊥=, and =⊢ ¬◻⊥ → ¬◻g= by contraposition. =⊢ ¬◻g → g= by definition of /g/, so =⊢ ¬◻⊥ → g=. Then, =⊢ ◻¬◻⊥ → ◻g= by (4). But we already saw that =⊢ ◻g → ◻⊥=, so =⊢ ◻¬◻⊥ → ◻⊥=, and by contraposition, =⊢ ¬◻⊥ → ¬◻¬◻⊥=.
+
+In other words, it can be proved in /S/ that if there is no proof in /S/ of a falsehood, then there is no proof in /S/ that there is no proof of a falsehood in /S/. There is no proof in /S/ of a falsehood if and only if /S/ is consistent, so this is exactly what the second incompleteness theorem says.
+
+*/This post is a retelling of George Boolos's "Goedel's Second Incompleteness Theorem Explained in Words of One Syllable"/*.
