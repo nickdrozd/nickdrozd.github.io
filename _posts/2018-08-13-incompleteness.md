@@ -6,9 +6,6 @@ categories:
 tags:
 ---
 
-# Table of Contents
-
-
 **Goedel's first incompleteness theorem** is the claim that any sound, consistent formal system of sufficient power is incomplete; that is, there are statements in the language of the system that can neither be proved nor disproved. Traditionally the theorem is proved by exhbiting a statement *g* which is provably equivalent to a statement encoding its own disprovability in the system *S*.
 
 Suppose there were a proof of *g* in *S*. By hypothesis, *S* is of sufficient strength to represent the provability of its own theorems, and so it would also be possible to prove that *g* was provable. But *g* implies that it is not provable, which is a contradiction.
