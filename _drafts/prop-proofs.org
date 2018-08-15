@@ -1,0 +1,205 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:nil todo:t |:t
+#+TITLE: Logic in Reazon II: Generating Propositional Logic Proofs
+#+DATE: <2018-08-15 Wed>
+#+AUTHOR: Nick Drozd
+#+EMAIL: nicholasdrozd@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.1 (Org mode 9.1.9)
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES:
+#+JEKYLL_TAGS:
+
+An axiomatic logical system consists of *axioms* and *rules of inference*, where an axiom is a statement stipulated to be provable and a rule of inference is a description of how to obtain new provable statements from old ones. A *theorem* is either an axiom or the result of applying a rule of inference to one or more theorems, and a *proof* is a sequence of statements such that every statement is either an axiom or a theorem obtained by applying a rule of inference to previous statements in the sequence.
+
+*Classical propositional logic* is encompassed by the following axioms[fn:1], along with one rule of inference:
+
+1. =p →. q → p=
+2. =p →. q → r :→: p → q .→. p → q=
+3. =¬p → ¬q .→. q → p=
+
+/Modus ponens/: If =p → q= and =p= are theorems, then so is =q=.
+
+*Intuitively*, (1) says that a true statement is implied by anything, (2) says that implication is transitive, and (3) says that implication is contraposable.
+
+Given all these definitions, it's possible (indeed, easy!) to write a program in *[[https://github.com/nickdrozd/reazon][Reazon miniKanren]]* to *generate propositional logic proofs*.
+
+Propositional formulae will be represented with a Lispy syntax (i.e., with lots of parentheses). A *justification* will be one of the symbols =A1=, =A2=, =A3=, or =MP=, and a *step* will be a list whose first element is a justification and whose second element is a formula. A *proof* will be a list of steps ordered from "latest" to "earliest". I don't have a rigorous definition of the ordering, but basically the first element of a proof list will be the theorem being proved, elements in the middle will be intermediate steps, and the last elements will be axioms. The ordering is complicated by the fact that proofs can be nested.
+
+But this all makes it seem more complicated than it really is. The code is short and simple[fn:2]:
+
+#+BEGIN_SRC emacs-lisp
+(reazon-defrel prop-logic-proof (s)
+  (reazon-disj
+   ;; A1
+   (reazon-fresh (p q)
+     (reazon-== s `((A1 (,p → (,q → ,p))))))
+   ;; A2
+   (reazon-fresh (p q r)
+     (reazon-== s `((A2 ((,p → (,q → ,r)) → ((,p → ,q) → (,p → ,r)))))))
+   ;; A3
+   (reazon-fresh (p q)
+     (reazon-== s `((A3 (((¬ ,p) → (¬ ,q)) → (,q → ,p))))))
+   ;; MP
+   (reazon-fresh (p q r1 r2 j1 j2 d1 d2)
+     (reazon-== r1 `((,j1 ,p) . ,d1))
+     (prop-logic-proof r1)
+     (reazon-== r2 `((,j2 (,p → ,q)) . ,d2))
+     (prop-logic-proof r2)
+     (reazon-== s `((MP ,q) ,r1 ,r2)))))
+#+END_SRC
+
+Let's look at the first four proofs generated from this definition.
+
+#+BEGIN_SRC emacs-lisp :results list
+(reazon-run 4 q (prop-logic-proof q))
+#+END_SRC
+
+- =((A1 (_0 → (_1 → _0))))=
+- =((A2 ((_0 → (_1 → _2)) → ((_0 → _1) → (_0 → _2)))))=
+- =((A3 (((¬ _0) → (¬ _1)) → (_1 → _0))))=
+- =((MP (_0 → (_1 → (_2 → _1)))) ((A1 (_1 → (_2 → _1)))) ((A1 ((_1 → (_2 → _1)) → (_0 → (_1 → (_2 → _1)))))))=
+
+The first three "proofs" are just the axioms, which are *self-justifying*. The fourth proof has a little more going on. With better formatting:
+
+#+BEGIN_SRC emacs-lisp
+'((MP (_0 → (_1 → (_2 → _1))))
+  ((A1 (_1 → (_2 → _1))))
+  ((A1 ((_1 → (_2 → _1)) → (_0 → (_1 → (_2 → _1)))))))
+#+END_SRC
+
+The conclusion of the proof (i.e., the theorem to be proved) is =(_0 → (_1 → (_2 → _1)))=. The first statement in the proof is an instance of (1), where =p= is =_1= and =q= is =_2=. The second statement is another instance of (1), where =p= is =(_1 → (_2 → _1))= and =q= is =_0=. Finally, the conclusion is obtained by an application of /modus ponens/ to those two statements.
+
+*Boring* for sure, but that is nonetheless a real, accurate, full-blown proof!
+
+I ran this definition for the first one hundred results, which took two or three seconds on a 2012 MBP. The hundredth theorem is not bad: =(((¬ _0) → (¬ (_1 → (_2 → _1)))) → _0)=. This says that if the negation of a statement implies the negation of (1), then that statement is true, which is an instance of *reasoning by contradiction*. Here is the proof:
+
+#+BEGIN_SRC emacs-lisp
+'((MP (((¬ _0) → (¬ (_1 → (_2 → _1)))) → _0))
+  ((MP (((¬ _0) → (¬ (_1 → (_2 → _1)))) → (_1 → (_2 → _1))))
+   ((A1 (_1 → (_2 → _1))))
+   ((A1 ((_1 → (_2 → _1)) → (((¬ _0) → (¬ (_1 → (_2 → _1)))) → (_1 → (_2 → _1)))))))
+  ((MP ((((¬ _0) → (¬ (_1 → (_2 → _1)))) → (_1 → (_2 → _1))) → (((¬ _0) → (¬ (_1 → (_2 → _1)))) → _0)))
+   ((A3 (((¬ _0) → (¬ (_1 → (_2 → _1)))) → ((_1 → (_2 → _1)) → _0))))
+   ((A2 ((((¬ _0) → (¬ (_1 → (_2 → _1)))) → ((_1 → (_2 → _1)) → _0)) → ((((¬ _0) → (¬ (_1 → (_2 → _1)))) → (_1 → (_2 → _1))) → (((¬ _0) → (¬ (_1 → (_2 → _1)))) → _0)))))))
+#+END_SRC
+
+Of the first one hundred proofs generated, twenty (!!!) are proofs of the "theorem" =(_0 → (_1 → _0))= (the first axiom). Some of these proofs are quite long, for example:
+
+#+BEGIN_SRC emacs-lisp
+'((MP (_0 → (_1 → _0)))
+  ((A1 (_2 → (_3 → _2))))
+  ((MP ((_2 → (_3 → _2)) → (_0 → (_1 → _0))))
+   ((A1 (_0 → (_1 → _0))))
+   ((MP ((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0)))))
+    ((A1 (_4 → (_5 → _4))))
+    ((MP ((_4 → (_5 → _4)) → ((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0))))))
+     ((A1 ((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0))))))
+     ((MP (((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0)))) → ((_4 → (_5 → _4)) → ((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0)))))))
+      ((A1 (_6 → (_7 → _6))))
+      ((MP ((_6 → (_7 → _6)) → (((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0)))) → ((_4 → (_5 → _4)) → ((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0))))))))
+       ((A1 (((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0)))) → ((_4 → (_5 → _4)) → ((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0))))))))
+       ((A1 ((((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0)))) → ((_4 → (_5 → _4)) → ((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0)))))) → ((_6 → (_7 → _6)) → (((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0)))) → ((_4 → (_5 → _4)) → ((_0 → (_1 → _0)) → ((_2 → (_3 → _2)) → (_0 → (_1 → _0))))))))))))))))
+#+END_SRC
+
+This proof consists of repeated applications of /modus ponens/ to nested instances of (1) using eight (!!!) different variables. This is as inane as it sounds, but it does appear to be a valid proof.
+
+In the expression that generated these results (=(reazon-run 4 q (prop-logic-proof q))=), the query variable =q= was left free. We can also generate proofs of specific theorems by specifying the form of the query variable. For instance, we can find proofs of theorems of the form =¬¬p → p= (i.e. double negation elimination):
+
+#+BEGIN_SRC emacs-lisp :results code
+(reazon-run 1 q
+  (reazon-fresh (p d)
+    (reazon-== q `((MP ((¬ (¬ ,p)) → ,p)) . ,d))
+    (prop-logic-proof q)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+'(((MP ((¬ (¬ (_0 → (_1 → _0)))) → (_0 → (_1 → _0))))
+   ((A1 (_0 → (_1 → _0))))
+   ((A1 ((_0 → (_1 → _0)) → ((¬ (¬ (_0 → (_1 → _0)))) → (_0 → (_1 → _0))))))))
+#+END_SRC
+
+Of the first one hundred results for this query, none of the theorems proved are actually =((¬ (¬ _0)) → _0)=, which is what I wanted. Instead, they all replace that free variable =_0= with some theorem (often an axiom, as above). It's not clear to me if this is due to a flaw in the definition of proof (is there something being left out?), in Reazon itself (is the search really complete?), or if such a theorem really would eventually be proved given enough time. Would it show up in the first thousand results? The first million? [[https://math.stackexchange.com/a/1131671][This proof]] of double negation elimination uses three (!!!) intermediate lemmas, so maybe it just requires a long proof.
+
+<<proof verification>>
+Finally, the proof "generator" can also be used as proof verifier. In this case, we'll bind the query variable to some arbitrary symbol, and the presence or absence of that symbol in the output will indicate the validity of the proof.
+
+#+BEGIN_SRC emacs-lisp :exports both
+(reazon-run 1 q
+  (prop-logic-proof
+   '((MP (_0 → (_1 → (_2 → _1))))
+     ((A1 (_1 → (_2 → _1))))
+     ((A1 ((_1 → (_2 → _1)) → (_0 → (_1 → (_2 → _1))))))))
+  (reazon-== q 'proof-looks-good!))
+#+END_SRC
+
+#+RESULTS:
+| proof-looks-good! |
+
+#+BEGIN_SRC emacs-lisp :exports both :results verbatim
+(reazon-run 1 q
+  (prop-logic-proof
+   '((MP (_0 → (_1 → (_2 → _1))))
+     ((A1 (_2 → (_2 → _1)))) ;; <-- wrong!
+     ((A1 ((_1 → (_2 → _1)) → (_0 → (_1 → (_2 → _1))))))))
+  (reazon-== q 'proof-looks-good!))
+#+END_SRC
+
+#+RESULTS:
+: nil
+
+<<Postscript>>
+*Postscript*
+
+As I was writing the section on [[proof verification][proof verification]], I discovered a bug in the definition of =prop-logic-proof=. The rule for /modus ponens/ given above looks like this:
+
+#+BEGIN_SRC emacs-lisp
+(reazon-fresh (p q r1 r2 j1 j2 d1 d2)
+  (reazon-== r1 `((,j1 ,p) . ,d1))
+  (prop-logic-proof r1)
+  (reazon-== r2 `((,j2 (,p → ,q)) . ,d2))
+  (prop-logic-proof r2)
+  (reazon-== s `((MP ,q) ,r1 ,r2)))
+#+END_SRC
+
+This definition causes the following query to go into an infinite loop:
+
+#+BEGIN_SRC emacs-lisp
+(reazon-run 1 q
+  (prop-logic-proof
+   '((A1 (_0 → (_1 → _0)))))
+  (reazon-== q 'proof-looks-good!))
+#+END_SRC
+
+An important principle of writing miniKanren programs is: *always put the recursive calls last*. This change fixes the problem:
+
+#+BEGIN_SRC emacs-lisp
+(reazon-fresh (p q r1 r2 j1 j2 d1 d2)
+  (reazon-== s `((MP ,q) ,r1 ,r2))
+  (reazon-== r1 `((,j1 ,p) . ,d1))
+  (reazon-== r2 `((,j2 (,p → ,q)) . ,d2))
+  ;; Recursive calls last!
+  (prop-logic-proof r1)
+  (prop-logic-proof r2))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :exports both
+(reazon-run 1 q
+  (prop-logic-proof
+   '((A1 (_0 → (_1 → _0)))))
+  (reazon-== q 'proof-looks-good!))
+#+END_SRC
+
+#+RESULTS:
+| proof-looks-good! |
+
+* Footnotes
+
+[fn:1] Due to Lukasiewicz, according to Wikipedia.
+
+[fn:2] Actually, this definition contains a subtle error. See the [[Postscript][postscript]].
