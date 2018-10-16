@@ -1,0 +1,178 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:nil todo:t |:t
+#+TITLE: Grepping Dictionaries, English and Otherwise
+#+DATE: <2018-10-16 Tue>
+#+AUTHOR: Nick Drozd
+#+EMAIL: nicholasdrozd@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.1 (Org mode 9.1.9)
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES:
+#+JEKYLL_TAGS:
+
+The English word /balloon/ has two consecutive double-letter pairs (/ll/ and /oo/). Are there any English words with four consecutive double-letter pairs? This can be a real stumper for someone who doesn't know *regular expressions*. But with regexes, it's easy:
+
+#+BEGIN_SRC shell :exports both
+grep -E '(.)\1(.)\2(.)\3(.)\4' /usr/share/dict/words
+#+END_SRC
+
+#+RESULTS:
+: subbookkeeper
+
+Some explanation about that command:
+
+1. =grep= is a command that searches stuff. It was named after a similar command in the old =ed= editor, =g/re/p=, for /global regular expression print/.
+
+2. The =-E= flag tells =grep= to use /extended regular expressions/, which are [[https://nikic.github.io/2012/06/15/The-true-power-of-regular-expressions.html][strictly more powerful than formal regular expressions]].
+
+3. =words= is a standard Unix file, though its exact location and contents are not standardized. I'm writing this on an old-ish version of MacOS. Your system may have a different =words= file, and in particular it may have one without the word /subbookkeeper/.[fn:1]
+
+4. The single quotation marks =''= serve to delimit the regex string to be passed to =grep=. Double quotation marks =""= can also be used, but they are probably the wrong choice, since they allow shell evaluation inside.[fn:2]
+
+5. The meat of the command, of course, is the regex =(.)\1(.)\2(.)\3(.)\4=. It consists of three basic parts:
+   - The dot character =.= matches any character at all in a string. If the =words= file contained numbers and punctuation and other junk, this would be a bad choice, and something more specific would be needed.
+   - The parentheses =()= group whatever is inside them. A grouped match can be referenced later.
+   - The backslash-numbers =\1= etc are /backreferences/. This is how grouped matches can be referred back to. The nth backreference refers to the nth match (with the numbering typically being 1-indexed).
+
+I like to *grep dictionaries* for different patterns. For instance, here's one to search for words with *palindromic substrings* of length eight or nine:
+
+#+BEGIN_SRC shell
+grep -E '(.)(.)(.)(.).?\4\3\2\1' /usr/share/dict/words
+#+END_SRC
+
+This yields some good ones, like /sensuousness/, /leviative/, and /overappareled/. Note the presence of the question mark =?= in that regex: it means that the preceding match can occur once or not at all. This is needed because =abcba= and =abba= are equally palindromic.
+
+That search can be modified to yield *strict palindromes* by adding the caret =^= and dollar sign =$=, which respectively match to the beginning and end of a string. Wrapping a regex in =^$= will match only whole strings, not substrings.
+
+#+BEGIN_SRC shell
+grep -E '^(.)(.)(.).?\3\2\1$' /usr/share/dict/words
+#+END_SRC
+
+This gives words like /reviver/, /rotator/, and my favorite, /repaper/.
+
+As a challenge, consider the following search:
+
+#+BEGIN_SRC shell
+grep -E "(.).\1..\1...\1....\1" /usr/share/dict/words
+#+END_SRC
+
+How would you characterize that regex in plain language? Can you think of a match?
+
+But enough about English. It's also fun to grep other languages for strange patterns. Let's take *Turkish*, for example. First, we need to get a Turkish word list. One way to do this is:
+
+#+BEGIN_SRC shell
+curl https://raw.githubusercontent.com/mertemin/turkish-word-list/master/words.txt --silent | grep -v '[ ]' > ~/turkish-words
+#+END_SRC
+
+Let's try the search we started with, looking for words with four consecutive double-letter pairs.
+
+#+BEGIN_SRC shell :exports both
+grep -E '(.)\1(.)\2(.)\3(.)\4' ~/turkish-words
+#+END_SRC
+
+#+RESULTS:
+: maatteessüf
+
+This is an archaic Turkish word meaning /unfortunately/. A commonly-used variant is /maalesef/. Both are ultimately derived from the *Arabic* word /asef/ اسف, meaning /regret/ or something like that.
+
+How about palindromes? It turns out that Turkish actually has a full nine-letter proper palindrome:
+
+#+BEGIN_SRC shell :exports both
+grep -E '(.)(.)(.)(.).?\4\3\2\1' ~/turkish-words
+#+END_SRC
+
+#+RESULTS:
+: kamalamak
+
+The word /kama/ means /dagger/, and /-mak/ is a verbal infinitive suffix, so /kamalamak/ is a verb meaning /to stab with a dagger/, or even just /to dagger/ if you want to use /dagger/ as a verb.
+
+Another fun application is finding what I call /*Turkish keyboard words*/. A [[http://people.ds.cam.ac.uk/rr25/Turkishwin/turkish-q.jpg][typical Turkish keyboard]] looks a lot like an American QWERTY keyboard, except that it has six extra letters added to the right of /m l p/: /ö ç ş i ğ ü/.[fn:3] I like to try and think of words and phrases that can be written using only these letter (along with spaces). Finding such words is easy with regexes.
+
+#+BEGIN_SRC shell :exports both :results value scalar
+grep -E '^[öçşiğü]+$' ~/turkish-words
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+çiğ
+çiş
+çüş
+iç
+içiş
+iğ
+iş
+işçi
+öç
+şiş
+üç
+#+end_example
+
+These words can be shuffled around to make funny phrases like /üç öç iği/, /three revenge spindles/, and /çiğ işçi çişi/, /raw worker piss/.
+
+Now let's take a look at some *Georgian* words. Again, we'll need a word list first.
+
+#+BEGIN_SRC shell
+curl http://crubadan.org/files/ka.zip --silent -o ~/ka.zip && unzip ~/ka.zip -d ~/ka-crubadan && awk '!/-/ { print $1 }' ~/ka-crubadan/ka-words.txt | LC_ALL=C sort -d > ~/georgian-words
+#+END_SRC
+
+Georgian is infamous for its *difficult consonant clusters*. The Georgian vowels are /ა ე ი ო უ/ (/a e i o u/), so let's try grepping for words with sequences not containing those letters. To do this, we'll use bracket-caret notation: =[^a]=, for example, matches characters other than =a=. For convenience, we'll also use brace counting: =a{5}= matches five =a='s in a row.
+
+#+BEGIN_SRC shell :exports both :results value scalar
+grep -E '[^აეიოუ]{6}' ~/georgian-words
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+მწვრთნელ
+მწვრთნელად
+მწვრთნელების
+მწვრთნელებს
+მწვრთნელთა
+მწვრთნელთან
+მწვრთნელი
+მწვრთნელის
+მწვრთნელმა
+მწვრთნელობის
+მწვრთნელს
+სამწვრთნელო
+შორსმჭვრეტელი
+#+end_example
+
+The first eleven words in that list are obvious variations of მწვრთნელი /trainer, coach/. [fn:4] Transliterated into English, this word looks like /mtsvrtneli/ (with the single letter წ transliterated as /ts/). To say the least, it's not an easy word to say.
+
+The only word in that list that isn't a variation of მწვრთნელი is შორსმჭვრეტელი /seer/ (I think). The regex matched this word on the substring რსმჭვრ /rsmchvr/. This is actually a compound word -- შორს /far/ and მჭვრეტელი /watcher/ -- so in a linguistic sense this probably doesn't count as a true consonant cluster. But this isn't a post about linguistics, it's a post about grepping.
+
+Finally, consider the Georgian letter *ყ*. This letter stands for a sound that is very foreign to English, a pop from the back of the throat. It corresponds to the Arabic ق. A word that Georgians often trot out to mock the pronunciation of foreginers is ბაყაყი /frog/. This has two ყ's in close proximity, and it's hard to get it right. Curiously, this word is of Turkic origin, and variations are used all over the place -- Sorani Kurdish, for instance, has بۆق.
+
+Anyway, are there any other Georgian words with ყ's near each other?
+
+#+BEGIN_SRC shell :exports both :results value scalar
+grep -E 'ყ.?ყ' ~/georgian-words
+#+END_SRC
+
+#+RESULTS:
+: ბაყაყები
+: ბაყაყების
+: ბაყაყი
+: უყოყმანოდ
+: ყაყაჩო
+: ყაყაჩოს
+: ყოყმანის
+: ყოყმანობდა
+
+Excluding variations, it looks like there are just two other words with this pattern: ყაყაჩო /poppy/ and ყოყმანი /hesitation/. They are also hard to say.
+
+* Footnotes
+
+[fn:4] The twelfth word, სამწვრთნელო, is a non-obvious variation: სა-მწვრთნელ-ო. I think it means /gym/ or /training facility/.
+
+[fn:3] The usual /i/ key is actually replaced with the Turkish dotless /ı/, so that when Turkısh people wrıte emaıls ın Englısh, ıt sometımes looks lıke thıs.
+
+[fn:2] On my computer, the command =grep "$USER$" /usr/share/dict/words= yields words like /picknick/. Can you guess what my username is?
+
+[fn:1] Is a =words= file (or a dictionary in general) better or worse for having a somewhat artificial word like /subbookkeeper/? If your =words= file doesn't have this word, do you wish it did?
