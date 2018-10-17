@@ -17,13 +17,13 @@ As an example, consider ***Hurriyet Daily News***<sup><a id="fnr.1" class="footr
 
 Here's what **[hurriyetdailynews.com](http://www.hurriyetdailynews.com/)** looks like:
 
-{% include image name="hurriyet-web.png" caption="Hurriyet website" %}
+![img](/assets/2018-10-17-web-scraping/hurriyet-web.png)
 
 The centerpiece of the landing page is a box containing a half dozen or so headlines with accompanying images. These headlines scroll through one at a time. Suppose, for whatever reason, that I'm interested in tracking the headlines that show up in that box. Here's how I would do it in Emacs.
 
 First, pop the site open in the Emacs brower **eww**<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>. Here's what it looks like:
 
-{% include image name="hurriyet-eww.png" caption="Hurriyet displayed in eww" %}
+![img](/assets/2018-10-17-web-scraping/hurriyet-eww.png)
 
 There are the headlines, together with topic keywords and some kind of text object corresponding to the story (I think it doesn't show up because **Javascript** isn't run). Now, open an empty buffer. I usually call my empty buffers `asdf`, but you can call yours something else if you want. Our ultimate goal is to copy each of those headlines into the empty buffer, at which point we can do whatever with them.
 
