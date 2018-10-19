@@ -21,7 +21,7 @@ Here's what **[hurriyetdailynews.com](http://www.hurriyetdailynews.com/)** looks
 
 The centerpiece of the landing page is a box containing a half dozen or so headlines with accompanying images. These headlines scroll through one at a time. Suppose, for whatever reason, that I'm interested in tracking the headlines that show up in that box. Here's how I would do it in Emacs.
 
-First, pop the site open in the Emacs brower **eww**<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>. Here's what it looks like:
+First, pop the site open in the Emacs brower **eww**<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>. It should looke like this (and if it doesn't, then the website has changed and this post is out of date):
 
 ![img](/assets/2018-10-17-web-scraping/hurriyet-eww.png)
 
@@ -45,7 +45,7 @@ TURKEY
 Saudi journalist Khashoggi decapitated after fingers cut off: Reports
 {% endhighlight %}
 
-1.  Move point (cursor) to the beginning of the line in the `eww` that says *Home Page*.
+1.  Move point (cursor) to the beginning of the line in the `eww` buffer that says *Home Page*.
 2.  Start recording a keyboard macro. The default binding for this is `C-x (`.
 3.  Hit `TAB`. This will jump down to the first topic keyword, which in this case is `WORLD`. (This is a link of some kind).
 4.  For whatever reason, the headlines can't be reached by `TAB`-jumping, so move the cursor down three lines (`C-n`, or `<down>`).
