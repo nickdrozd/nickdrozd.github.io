@@ -1,0 +1,46 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:nil todo:t |:t
+#+TITLE: The Bubble Sort Machine
+#+DATE: <2018-11-02 Fri>
+#+AUTHOR: Nick Drozd
+#+EMAIL: nicholasdrozd@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 27.0.50 (Org mode 9.1.14)
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES:
+#+JEKYLL_TAGS:
+
+Imagine a simple machine with enough memory to store N records. The memory is laid out on a rotating disk with a designated point for the first record and a designated point for the Nth record. The disk only rotates one direction, from first to Nth and then back to first. You can also imagine that the memory is traversed left to right like a typewriter, with the reader popping back to the left when it reaches the end; what's important is that the memory only goes in one direction.
+
+The machine also has a single register R with space enough for just one record. On each pass over the memory, the following N+1 steps are executed:
+
+*Step 1.* Put record R_1 into register R.
+
+*Step i, for 1 < i <= N.* Either put the contents of register R into record slot R_{i-1} and put record R_i into R (that is, swap out R for R_i), or put record R_i into record slot R_{i-1} (that is, shift record R_i back and leave register R alone).
+
+*Step N+1.* Put the contents of register R into record slot R_N.
+
+Say that we want to sort the records, and we don't care about how many comparisons or swaps are made because this crappy little machine was designed so that those operations are fast and cheap. On the other hand, the machine makes a horrible grinding noise as it rotates, so we want to minimize the number of passes made over the records.
+
+It turns out that in these circumstances, *bubble sort is optimal*, where "bubble sort" is the strategy of swapping records when R <= R_i and shifting records when R > R_i. Although a record can potentially "bubble up" all the way to the end of the list in a single pass, no record can "sink down" more than one space. Thus the number of passes required will be the maximum of the number of inversions for each record. In fact, nothing matters other than that number; the lists =[2 3 4 5 1]= and =[5 4 3 2 1]= each take four passes to sort, and that's because the =1= has to "sink down" four slots in both cases. Well, bubble sort always moves inverted records back by one slot, so it will sort in that bound, and is therefore optimal.
+
+Now, you might say that this result is not particulary remarkable. You might say that the design of the machine is stupid to begin with, and the problem scenario is contrived in such a way as to cast a favorable light on bubble sort, which, as everyone knows, sucks. That may all be true. What's more remarkable is that this was apparently the first ever result in the field of computational complexity.
+
+Here's what *Donald Knuth* says:
+
+#+BEGIN_QUOTE
+The Ph.D. thesis "Electronic Data Sorting" by Howard B. Demuth (Stanford University, October 1956) was perhaps the first publication to deal in any detail with questions of computational complexity. ... It is perhaps unfortunate that the first theorem in the study of computational complexity via automata established the "optimality" of a sorting method that is so poor from a programming standpoint! ... The moral is that optimality results are often heavily dependent on the abstract model; the results are quite interesting, but they must be applied wisely in practice.
+#+END_QUOTE
+
+This all comes from exercise 5.3.4--68 of */The Art of Computer Programming/*, along with the provided answer. I don't have anything novel to add, but I thought it was worth highlighting, since this strange problem is buried way at the end of a math-heavy section[fn:1] that most people probably skip. I certainly did; it was only by chance that it caught my eye as I was skimming the problems.
+
+Oh, and in case you were wondering, Knuth gave the exercise a difficulty of 25.
+
+* Footnotes
+
+[fn:1] "Networks for Sorting". Closing epigraph: /They that weave networks shall be confounded./ (Isaiah 19:9)
