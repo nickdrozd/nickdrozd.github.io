@@ -5,7 +5,7 @@ layout: post
 categories:
 tags:
 ---
-I just landed **my first commit in Emacs**. Hooray! And I don't mean some external package ([I've done that](https://github.com/Wilfred/helpful/commits?author=nickdrozd)) or some weird Emacs fork ([I've done that too](https://github.com/Wilfred/remacs/commits?author=nickdrozd)), but **real-deal core GNU Emacs**. Gaze upon it, glorious commit [5d6258518e4ba5312fc7d6564bba2232e06bf0a6](https://github.com/emacs-mirror/emacs/commit/5d6258518e4ba5312fc7d6564bba2232e06bf0a6)!
+I just landed **my first commit in Emacs**. Hooray! And I don't mean some external package ([I've done that](https://github.com/Wilfred/helpful/commits?author=nickdrozd)) or some weird Emacs fork ([I've done that too](https://github.com/Wilfred/remacs/commits?author=nickdrozd)), but **real-deal core GNU Emacs**. Gaze upon it, glorious commit [5d6258518e4ba5312fc7d6564bba2232e06bf0a6](https://git.savannah.gnu.org/cgit/emacs.git/commit/?id=5d6258518e4ba5312fc7d6564bba2232e06bf0a6)!
 
 Besides whitespace, it adds just four characters: `else`. To explain what the commit does, let's take a step back and look at the structure of Emacs as a whole.
 
