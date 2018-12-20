@@ -15,7 +15,7 @@
 #+JEKYLL_CATEGORIES:
 #+JEKYLL_TAGS:
 
-I just landed *my first commit in Emacs*. Hooray! And I don't mean some external package ([[https://github.com/Wilfred/helpful/pulls?utf8=%25E2%259C%2593&q=is%253Apr+author%253Anickdrozd][I've done that]]) or some weird Emacs fork ([[https://github.com/Wilfred/remacs/pulls?utf8=%25E2%259C%2593&q=is%253Apr+author%253Anickdrozd][I've done that too]]), but *real-deal core GNU Emacs*. Gaze upon it, glorious commit [[https://github.com/emacs-mirror/emacs/commit/5d6258518e4ba5312fc7d6564bba2232e06bf0a6][5d6258518e4ba5312fc7d6564bba2232e06bf0a6]]!
+I just landed *my first commit in Emacs*. Hooray! And I don't mean some external package ([[https://github.com/Wilfred/helpful/commits?author=nickdrozd][I've done that]]) or some weird Emacs fork ([[https://github.com/Wilfred/remacs/commits?author=nickdrozd][I've done that too]]), but *real-deal core GNU Emacs*. Gaze upon it, glorious commit [[https://github.com/emacs-mirror/emacs/commit/5d6258518e4ba5312fc7d6564bba2232e06bf0a6][5d6258518e4ba5312fc7d6564bba2232e06bf0a6]]!
 
 Besides whitespace, it adds just four characters: =else=. To explain what the commit does, let's take a step back and look at the structure of Emacs as a whole.
 
