@@ -1,0 +1,114 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
+#+TITLE: The Story of XEmacs
+#+DATE: <2019-02-19 Tue>
+#+AUTHOR: Nick Drozd
+#+EMAIL: nicholasdrozd@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 27.0.50 (Org mode 9.2.1)
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES:
+#+JEKYLL_TAGS:
+
+* What is XEmacs?
+
+*XEmacs* was an *Emacs fork* that was used from 1991/2 until, I don't know, some time in the 2000s? The last stable release was in 2009 and the last beta release was in 2013, but I think it had been dying a slow death for years before that. Probably somebody still uses it, and [[https://www.xemacs.org/index.html][the website]] is up, but I have not personally heard of anyone using it any time recently.
+
+It isn't much now, but it caused quite a stir in its heyday. It offered features that Emacs didn't have, and therefore caused a *schism* among Emacs users. Package authors generally want to reach as wide an audience as possible, so a great deal of effort was spent on maintining *XEmacs compatibility*. To this day there are traces of XEmacs in the core Emacs code:
+
+#+begin_src shell :exports both
+grep -ri xemacs ~/emacs/lisp/*.el ~/emacs/src/*.[ch] | wc -l
+#+end_src
+
+#+RESULTS:
+: 277
+
+The typical pattern for dealing with XEmacs compatibility is to check for =(featurep 'xemacs)=, as in the following:
+
+#+begin_src emacs-lisp
+(defcustom dframe-update-speed
+  (if (featurep 'xemacs) 2		; 1 is too obtrusive in XEmacs
+    1)
+  "Idle time in seconds needed before dframe will update itself.
+Updates occur to allow dframe to display directory information
+relevant to the buffer you are currently editing."
+  :group 'dframe
+  :type 'integer)
+#+end_src
+
+/1 is too obtrusive in XEmacs/? Uh, okay.
+
+* History
+
+So why was XEmacs such a big deal? What were the features that caused users to jump ship? Before getting into that, let's flash back to the *late 80s*.
+
+*Lucid* was a Silicon Valley startup that developed *Lisp machine*-style Common Lisp environments for mainstream workstations. They did reasonably well, but Lisp eventually fell out of favor and a new product was needed. They figured that *object-oriented programming* was going to be the next big thing, and that *C++* in particular would be the next big language, so they set about making a fancy *C++ development environment*.
+
+The environment was to be based on Emacs, and the commercial product came to be known as /*Energize*/. Check out this [[https://www.youtube.com/watch?v=pQQTScuApWk][Energize promotional video]] from 1993 to get a sense of what that environment was like. Note the prominence of GUI elements -- menus, buttons, pop-ups, colors, fonts, links, mouse interactions, and so forth.
+
+Modern Emacs has all those things, of course, but *Emacs 18* did not. *Emacs 19* was supposed to get some of that stuff, but it had been in development for a while with no release in sight. So Lucid decided to take matters into their own hands and develop those features themselves.
+
+A lot of that work ended up in Emacs -- the Elisp byte code compiler, for instance, is credited to =Jamie Zawinski <jwz@lucid.com>= -- but a lot of it, as a result of Richard Stallman's objections, did not. There was an awful lot of finger-pointing about this, and I have no idea whether that was a good or a bad outcome. Regardless, Lucid needed those features to move ahead with Energize, so they ended up releasing their own version of Emacs 19, known as */Lucid Emacs/* or */Lemacs/* for short (as opposed to what they called */FSF Emacs/* or */FSFmacs/* for short).
+
+Naturally, users liked having access to all that GUI goodness (Zawinski referred to it as "an attempt to ... make Emacs be a good citizen of modern GUI desktops"), and so they switched. Not all of them, but enough of them to make an impact.
+
+*Lucid went out of business in 1994*, and Lemacs was spun off as XEmacs. In subsequent years Emacs would catch up to XEmacs in terms of features. I guess users concluded that there was no longer any reason to deal with a fork, so they went back to Emacs. And there the story ends.
+
+* Sources
+
+To be clear, nothing here is firsthand information. I wasn't there, and I've never used XEmacs. Everything I know about it comes from primary or secondary sources. Here they are.
+
+  - Jamie Zawinski, "[[https://www.jwz.org/doc/lemacs.html][The Lemacs/FSFmacs Schism]]", 2000
+
+    Zawinski's firsthand partisan account of working on Lemacs is a great read, but even more valuable than that is a long list of *archived emails* from 1992 involving the principal actors of the whole saga: Zawinski, Richard Stallman, Lucid founder Richard Gabriel, etc.
+
+  - Richard Stallman, "[[http://stallman.org/articles/xemacs.origin][The Origin of XEmacs]]", ¿2005?
+
+    An objection to Zawinski's version of the story.
+
+  - Richard Gabriel, /[[https://www.dreamsongs.com/Files/PatternsOfSoftware.pdf][Patterns of Software]]/, 1996
+
+    Two chapters in particular -- "Into the Ground: Lisp" and "Into the Ground: C++" -- give an illuminating look into the inner workings of Lucid. Their titles hint at their tone.
+
+  - XEmacs maintainers, "[[https://www.xemacs.org/About/XEmacsVsGNUemacs.html][XEmacs vs. GNU Emacs]]", ¿2001?
+
+    A diplomatic description of the differences, techincal and otherwise, between Emacs and XEmacs. It seems diplomatic to me at least; Zawinski describes it as "[[https://en.wiktionary.org/wiki/pusillanimous][pusillanimous]]" (/showing ignoble cowardice, or contemptible timidity/).
+
+  - Steve Yegge, "[[http://steve-yegge.blogspot.com/2008/04/xemacs-is-dead-long-live-xemacs.html][XEmacs is Dead. Long Live XEmacs!]]", 2008
+
+    A nonpartisan account of the state of XEmacs in its twilight. More like a eulogy than a postmortem.
+
+  - Stefan Monnier and Michael Sperber, "[[https://www.iro.umontreal.ca/~monnier/hopl-4-emacs-lisp.pdf][Evolution of Emacs Lisp]]", 2018
+
+    Contains a discussion of some technical differences between Emacs and XEmacs (keymaps, for example, are opaque in XEmacs, but transparent in Emacs). Monnier is an Emacs maintainer.
+
+* Trivia
+
+  - The [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Difference-between-Emacs-and-XEmacs.html][Emacs FAQ]] refers to XEmacs as "a *branch version* of Emacs".
+  - Energize won a [[https://web.archive.org/web/20141217184649/http://www.drdobbs.com/joltawards/3rd-jolt-product-excellence-productivit/232602332][1993 *Jolt Cola* Programmer Productivity Award]].
+  - In 2004, somebody decided to *[[https://lists.gnu.org/archive/html/emacs-devel/2004-12/msg01057.html][fork XEmacs]]*. The fork was called /*SXEmacs*/, apparently pronouned as /[[http://www.sxemacs.org/docs/faq/Q1_002e0_002e8.html#Q1_002e0_002e8][sexy macs]]/. Unsurprisingly, it didn't take off.
+
+* Did someone intentionally *sow discord* among Emacs developers?
+
+Everything up to now has been more or less a *rehash* of the same old XEmacs story, without anything fundamentally new. Before I finish, there is one wrinkle I would like to point out that I have never seen discussed, and it's the *conspiracy theory* question in the heading.
+
+Reading through the email archive mentioned above, I noticed a few references to a supposed "*Emacs steering committee*". Here's a passage from Richard Gabriel (Mon, 22 Jun 92 21:37:51 PDT):
+
+#+begin_quote
+When we learned last Summer that FSF had established an Emacs steering committee, and no one from my organization was put on that, or even informed of its existence, we came to the conclusion that the FSF had no interest in working with us, and we stopped trying.
+#+end_quote
+
+And here's one from Richard Stallman (Tue, 23 Jun 92 05:17:33 -0400):
+
+#+begin_quote
+There have been communication failures. For example, last summer Gabriel found out about an Emacs Steering Committee which no one from Lucid had been invited to join. Apparently I wasn't invited, or even told--I don't recall ever hearing about such a committee. I think something got garbled in transmission.
+#+end_quote
+
+So somehow Gabriel got the idea in his head that there was a "steering committee", but in fact there was no such thing. Where did this idea come from? Was it just a "communication failure", or was it something more sinister? Did somebody *plant rumors* about a "steering committee" in order to drive a wedge between Lucid and FSF?
+
+Maybe not. But maybe. I don't have any facts here, just *speculation*. I don't know, something about this just stands out to me, so I figured I might as well mention it while I'm on the subject.
