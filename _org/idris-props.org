@@ -1,0 +1,101 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:nil todo:t |:t
+#+TITLE: Propositional Logic Theorems as Types (in Idris)
+#+DATE: <2019-04-10 Wed>
+#+AUTHOR: Nick Drozd
+#+EMAIL: nicholasdrozd@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 27.0.50 (Org mode 9.2.1)
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES:
+#+JEKYLL_TAGS:
+
+Suppose you have a function from =Int= to =Char= and an =Int= and you need a =Char=. How can you get one? In other words, how would you implement the function =A : (Int -> Char) -> Int -> Char=? Easy, just apply the function to the argument: =A f x = f x=.
+
+Okay, now suppose you have a function from =Int= to =Char= and a function from =Char= to =String= and an =Int=. How can you get a =String=? In other words, how can you implement =B : (Int -> Char) -> (Char -> String) -> Int -> String=? Still easy: =B f g x = g (f x)=.
+
+Finally, suppose you have a function from =Int= to =Char= to =String= and a function from =Int= to =Char= and an =Int=. Again, how can you get a =String=? In other words, how can you implement =C : (Int -> Char -> String) -> (Int -> Char) -> Int -> String=. Again, easy: =C f g x = f x (g x)=.
+
+You might notice that these functions seem to have an *algebraic* character, and don't have anything to do with =Int=, =Char=, or =String= in particular. That's true, and so the signatures can be rewritten *generically*: =A : (p -> q) -> p -> q=, =B : (p -> q) -> (q -> r) -> p -> r=, and =A : (p -> q -> r) -> (p -> q) -> p -> r= (the implementations can be left alone).
+
+At this point you might look at these signature and notice that they bear a striking similarity to certain theorems of *propositional logic*, namely [[https://en.wikipedia.org/wiki/Modus_ponens][modus ponens]], [[https://en.wikipedia.org/wiki/Hypothetical_syllogism][hypothetical syllogism]], and [[https://en.wikipedia.org/wiki/Frege's_theorem#Frege's_theorem_in_propositional_logic][Frege's theorem]], respectively. If you thought this, then congratulations, you've just discovered the first part of the *[[https://en.wikipedia.org/wiki/Curry%25E2%2580%2593Howard_correspondence][Curry-Howard correspondence]]*. The "correspondence" is the *deep isomorphism* between *types and programs*, on the one hand, and *propositions and proofs* on the other. The first part of the correspondence has to do with *propositional logic* and was discovered by Curry in the 1930s. The second part has to do with *quantificational logic*, and was discovered by Howard several decades later. (We'll ignore the second part for now.)
+
+Here's a theorem for joining inferences:
+
+#+begin_src
+joinInference : (p -> q) -> (r -> s) -> (q -> r) -> p -> s
+joinInference f h g x = h (g (f x))
+#+end_src
+
+We can also prove *[[https://en.wikipedia.org/wiki/Double_negation][double negation]] introduction* (where =p -> Void=[fn:1] stands in for /p → ⊥/, which is equivalent to /¬p/)[fn:2]:
+
+#+begin_src
+dni : p -> (p -> Void) -> Void
+dni x f = f x
+#+end_src
+
+What about *double negation elimination* (DNE)?
+
+#+begin_src
+dne : ((p -> Void) -> Void) -> p
+#+end_src
+
+Not so fast! It turns out that the type systems used by languages like *Idris* and *Haskell* don't correspond to *classical logic*, but rather to *intuitionistic logic*[fn:3]. Intuitionistic logic is like classical logic except that it doesn't validate the *[[https://en.wikipedia.org/wiki/Double_negation][principle of the excluded middle]]* (PEM): /p ∨ ¬p/. That is, it's not the case that for any proposition, either that proposition or its negation holds, and a double negative is /not/ [[https://www.youtube.com/watch?v=PKo7Ivssqfk][proof positive]].
+
+To see why someone might reject PEM, consider the following classic argument.
+
+#+begin_quote
+*/Claim/* There are irrational numbers /a/ and /b/ such that /a^b/ is rational.
+
+*/Proof/* The number √2^(√2) is either rational or it isn't. If it is, let /a = b = √2/ and we're done. Otherwise, let /a = √2^(√2)/ and let /b = √2/. Then /a^b = (√2^(√2))^(√2) = √2^(√2 * √2) = √2^2 = √2 * √2 = 2/. Tada!
+#+end_quote
+
+There's something /off/ about this proof. It says that numbers with some property exist, but it doesn't give *witnesses*; without witnesses, the knowledge feels hollow. The critical point in the proof is this line: /The number √2^(√2) is either rational or it isn't./ But this is an instance of PEM! So you might forbid reasoning with PEM in order to preclude proofs like this one.[fn:4]
+
+Anyway, our type system can't prove PEM, or DNE, or any of a variety of other equivalent statements, like *[[https://en.wikipedia.org/wiki/Peirce%2527s_law][Peirce's law]]* (=peirce : ((p -> q) -> p) -> p=) or the *[[https://en.wikipedia.org/wiki/Consensus_theorem][consensus theorem]]* (=consensus : (q, r) -> Either (p, q) (p -> Void, r)=). On the other hand, it /is/ possible to prove the double negation of any of them, or indeed of any classically valid proposition.[fn:5] Here, for instance, is the proof of the double negation of Peirce's law:
+
+#+begin_src
+peirceDN : ((((p -> q) -> p) -> p) -> Void) -> Void
+peirceDN f = f (\g => g (\x => void (f (\h => x))))
+#+end_src
+
+It's also possible to prove any of those statements given (an instance of) another. For instance, here's a proof DNE implies PEM (taking PEM itself for /p/ in DNE):
+
+#+begin_src
+dne2pem : ((((Either p (p -> Void)) -> Void) -> Void) -> (Either p (p -> Void))) -> Either p (p -> Void)
+dne2pem f = f (\g => g (Right (\x => g (Left x))))
+#+end_src
+
+* Exercises
+
+1. Prove the double negations of PEM, DNE, and the consensus theorem.
+2. Prove that PEM, DNE, Peirce's law, and the consensus theorem are equivalent. DNE -> PEM is already done, so there are eleven more implications to prove. Or you could prove them in a circle if that's too much work.
+3. Prove [[https://en.wikipedia.org/wiki/Contraposition][contraposition]] (=contraposition : (p -> q) -> (q -> Void) -> p -> Void=). Can you prove its converse?
+
+* Discussion Questions
+
+1. To what extent should nonconstructive reasoning be accepted?
+2. Does any of this types-as-propositions stuff have any bearing on writing real programs in the real world? Does it have any bearing on proving new theorems?
+
+* Further Reading
+
+- /[[http://thelittletyper.com/][The Little Typer]]/
+- [[https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf]["Propositions as Types"]]
+- [[https://pdfs.semanticscholar.org/1e75/6d625d4cf2d91f69149b3d5a1f2d07fe4b2f.pdf]["Intuitionistic Logic"]]
+
+* Footnotes
+
+[fn:1] In Idris, =Void= is a type with no constructors. It therefore has no instances, and is said to "uninhabited".
+
+[fn:2] Some sources make it sound like use /p → ⊥/ for /¬ p/ was an innovation of intuitionism, but /p → ⊥ .↔ ¬ p/ is classically valid.
+
+[fn:3] The name comes from /intuitionism/, a philosophy that has something to do with mathematics stemming from mental activity. Personally I could do without that historical baggage. /Constructive logic/ would be a less loaded name, but I think it might already be used for something else.
+
+[fn:4] Specifically, this means stipulating that a proof of a disjunction requires a proof of one of its disjuncts.
+
+[fn:5] Classical logic proves all the theorems of intuitionistic logic and then some, so in one sense classical is the stronger logic. But since any classical theorem can be proved intuitionistically by adding a double negation, we might say that intuitionistic is the stronger logic. After all, if a theorem can't be proved intuitionistically except with a double negation, then we know it doesn't have a constructive proof.
