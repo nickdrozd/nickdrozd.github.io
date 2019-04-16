@@ -15,33 +15,65 @@
 #+JEKYLL_CATEGORIES:
 #+JEKYLL_TAGS:
 
-Suppose you have a function from =Int= to =Char= and an =Int= and you need a =Char=. How can you get one? In other words, how would you implement the function =A : (Int -> Char) -> Int -> Char=? Easy, just apply the function to the argument: =A f x = f x=.
+Suppose you have a function from =Int= to =Char= and an =Int= and you need a =Char=. How can you get one? In other words, how would you implement the function
 
-Okay, now suppose you have a function from =Int= to =Char= and a function from =Char= to =String= and an =Int=. How can you get a =String=? In other words, how can you implement =B : (Int -> Char) -> (Char -> String) -> Int -> String=? Still easy: =B f g x = g (f x)=.
+#+begin_src idris
+A : (Int -> Char) -> Int -> Char
+#+end_src
 
-Finally, suppose you have a function from =Int= to =Char= to =String= and a function from =Int= to =Char= and an =Int=. Again, how can you get a =String=? In other words, how can you implement =C : (Int -> Char -> String) -> (Int -> Char) -> Int -> String=. Again, easy: =C f g x = f x (g x)=.
+Easy, just apply the function to the argument:
 
-You might notice that these functions seem to have an *algebraic* character, and don't have anything to do with =Int=, =Char=, or =String= in particular. That's true, and so the signatures can be rewritten *generically*: =A : (p -> q) -> p -> q=, =B : (p -> q) -> (q -> r) -> p -> r=, and =A : (p -> q -> r) -> (p -> q) -> p -> r= (the implementations can be left alone).
+#+begin_src idris
+A f x = f x
+#+end_src
 
-At this point you might look at these signature and notice that they bear a striking similarity to certain theorems of *propositional logic*, namely [[https://en.wikipedia.org/wiki/Modus_ponens][modus ponens]], [[https://en.wikipedia.org/wiki/Hypothetical_syllogism][hypothetical syllogism]], and [[https://en.wikipedia.org/wiki/Frege's_theorem#Frege's_theorem_in_propositional_logic][Frege's theorem]], respectively. If you thought this, then congratulations, you've just discovered the first part of the *[[https://en.wikipedia.org/wiki/Curry%25E2%2580%2593Howard_correspondence][Curry-Howard correspondence]]*. The "correspondence" is the *deep isomorphism* between *types and programs*, on the one hand, and *propositions and proofs* on the other. The first part of the correspondence has to do with *propositional logic* and was discovered by Curry in the 1930s. The second part has to do with *quantificational logic*, and was discovered by Howard several decades later. (We'll ignore the second part for now.)
+Okay, now suppose you have a function from =Int= to =Char= and a function from =Char= to =String= and an =Int=. How can you get a =String=? In other words, how can you implement
+
+#+begin_src idris
+B : (Int -> Char) -> (Char -> String) -> Int -> String
+#+end_src
+
+Easy again, just compose the calls to the functions:
+
+#+begin_src idris
+B f g x = g (f x)
+#+end_src
+
+Finally, suppose you have a function from =Int= to =Char= to =String= and a function from =Int= to =Char= and an =Int=. Again, how can you get a =String=? In other words, how can you implement
+
+#+begin_src idris
+C : (Int -> Char -> String) -> (Int -> Char) -> Int -> String
+#+end_src
+
+This one is left for the reader.
+
+You might notice that these functions seem to have an *algebraic* character, and don't have anything to do with =Int=, =Char=, or =String= in particular. That's true, and so the signatures can be rewritten *generically* (the implementations can be left alone):
+
+#+begin_src idris
+A : (p -> q) -> p -> q
+B : (p -> q) -> (q -> r) -> p -> r
+C : (p -> q -> r) -> (p -> q) -> p -> r
+#+end_src
+
+At this point you might look at these signatures and notice that they bear a striking similarity to certain theorems of *propositional logic*, namely [[https://en.wikipedia.org/wiki/Modus_ponens][modus ponens]], [[https://en.wikipedia.org/wiki/Hypothetical_syllogism][hypothetical syllogism]], and [[https://en.wikipedia.org/wiki/Frege's_theorem#Frege's_theorem_in_propositional_logic][Frege's theorem]], respectively. If you thought this, then congratulations, you've just discovered the first part of the *[[https://en.wikipedia.org/wiki/Curry%25E2%2580%2593Howard_correspondence][Curry-Howard correspondence]]*. The "correspondence" is the *deep isomorphism* between *types and programs*, on the one hand, and *propositions and proofs* on the other. The first part of the correspondence has to do with *propositional logic* and was discovered by Curry in the 1930s. The second part has to do with *quantificational logic*, and was discovered by Howard several decades later. (We'll ignore the second part for now.)
 
 Here's a theorem for joining inferences:
 
-#+begin_src
+#+begin_src idris
 joinInference : (p -> q) -> (r -> s) -> (q -> r) -> p -> s
 joinInference f h g x = h (g (f x))
 #+end_src
 
 We can also prove *[[https://en.wikipedia.org/wiki/Double_negation][double negation]] introduction* (where =p -> Void=[fn:1] stands in for /p → ⊥/, which is equivalent to /¬p/)[fn:2]:
 
-#+begin_src
+#+begin_src idris
 dni : p -> (p -> Void) -> Void
 dni x f = f x
 #+end_src
 
 What about *double negation elimination* (DNE)?
 
-#+begin_src
+#+begin_src idris
 dne : ((p -> Void) -> Void) -> p
 #+end_src
 
@@ -57,16 +89,24 @@ To see why someone might reject PEM, consider the following classic argument.
 
 There's something /off/ about this proof. It says that numbers with some property exist, but it doesn't give *witnesses*; without witnesses, the knowledge feels hollow. The critical point in the proof is this line: /The number √2^(√2) is either rational or it isn't./ But this is an instance of PEM! So you might forbid reasoning with PEM in order to preclude proofs like this one.[fn:4]
 
-Anyway, our type system can't prove PEM, or DNE, or any of a variety of other equivalent statements, like *[[https://en.wikipedia.org/wiki/Peirce%2527s_law][Peirce's law]]* (=peirce : ((p -> q) -> p) -> p=) or the *[[https://en.wikipedia.org/wiki/Consensus_theorem][consensus theorem]]* (=consensus : (q, r) -> Either (p, q) (p -> Void, r)=). On the other hand, it /is/ possible to prove the double negation of any of them, or indeed of any classically valid proposition.[fn:5] Here, for instance, is the proof of the double negation of Peirce's law:
+Anyway, our type system can't prove PEM, or DNE, or any of a variety of other equivalent statements, like *[[https://en.wikipedia.org/wiki/Peirce%2527s_law][Peirce's law]]* or the or the *[[https://en.wikipedia.org/wiki/Consensus_theorem][consensus theorem]]*:
 
-#+begin_src
+#+begin_src idris
+peirce : ((p -> q) -> p) -> p
+
+consensus : (q, r) -> Either (p, q) (p -> Void, r)
+#+end_src
+
+ On the other hand, it /is/ possible to prove the double negation of any of them, or indeed of any classically valid proposition.[fn:5] Here, for instance, is the proof of the double negation of Peirce's law:
+
+#+begin_src idris
 peirceDN : ((((p -> q) -> p) -> p) -> Void) -> Void
 peirceDN f = f (\g => g (\x => void (f (\h => x))))
 #+end_src
 
 It's also possible to prove any of those statements given (an instance of) another. For instance, here's a proof DNE implies PEM (taking PEM itself for /p/ in DNE):
 
-#+begin_src
+#+begin_src idris
 dne2pem : ((((Either p (p -> Void)) -> Void) -> Void) -> (Either p (p -> Void))) -> Either p (p -> Void)
 dne2pem f = f (\g => g (Right (\x => g (Left x))))
 #+end_src
