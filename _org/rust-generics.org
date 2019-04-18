@@ -1,0 +1,113 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:nil todo:t |:t
+#+TITLE: Lispier Rust with Generics
+#+DATE: <2019-04-18 Thu>
+#+AUTHOR: Nick Drozd
+#+EMAIL: nicholasdrozd@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 27.0.50 (Org mode 9.2.1)
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES:
+#+JEKYLL_TAGS:
+
+In *Lisp*, as in languages like Python, *there are no types*. No, wait, there is *just one type*, and everything is that type. No, that's not right either. Well, whatever the types really are, it certainly /feels/ from the programmer's perspective like there are no types, because types are never or only rarely declared. *C* is not like this, because in C you're constantly declaring types and casting and so forth.
+
+In the *[[https://nickdrozd.github.io/2018/12/20/emacs-commit.html][C core of Emacs]]*, an elaborate system of *macros* makes it possible to write C code that feels like writing Lisp, or at least some kind of dynamically typed language. *[[https://nickdrozd.github.io/2019/04/16/remacs-faq.html][Remacs]]* is an effort to rewrite the C core in *Rust*. Rust allows for *generic types*, which aren't available in C, and using these it's possible to make the low-level code *even more Lispier than ever*.
+
+Here's some *concretely-typed* Rust[fn:1]. =cons= is defined in C, and is exported to Rust as =Fcons=. =LispObject::cons= is a wrapper around the unsafe =Fcons=, and both functions take two =LispObjects= and return another one. =frame_position= is defined in Rust, where it takes a =LispFrameRef= as an argument and returns a =LispObject=. It is wrapped with the =lisp_fn= procedural macro, which will cause it to be exported as a function called =Fframe_position= which takes =LispObject= for its input and output.
+
+#+begin_src rust
+extern "C" {
+    pub fn Fcons(arg1: LispObject, arg2: LispObject) -> LispObject;
+}
+
+impl LispObject {
+    pub fn cons(car: LispObject, cdr: LispObject) -> Self {
+        unsafe { Fcons(car, cdr) }
+    }
+}
+
+#[lisp_fn]
+pub fn frame_position(frame: LispFrameRef) -> LispObject {
+    LispObject::cons(
+        LispObject::from(frame.left_pos),
+        LispObject::from(frame.top_pos),
+    )
+}
+#+end_src
+
+=frame_position= just returns a cons pair containing two fields from the given frame. But those fields are numbers (=c_int=, specifically), and =LispObject::cons= requires =LispObjects=, and so the numbers must be cast before passing them along.
+
+*Explicit type conversion* of this sort was happening all over the place in the Remacs Rust code, and it was *ugly and burdensome*. Wouldn't it be easier to just skip it? Well, generics make that possible.
+
+Rather than forcing the *caller* to cast the arguments in preparation for consing, we can simply tell =LispObject::cons= to take care of the casting itself, *provided* that the arguments are of a type that can be converted to =LispObject=[fn:2]:
+
+#+begin_src rust
+impl LispObject {
+    pub fn cons(car: impl Into<LispObject>, cdr: impl Into<LispObject>) -> Self {
+        unsafe { Fcons(car.into(), cdr.into()) }
+    }
+}
+
+#[lisp_fn]
+pub fn frame_position(frame: LispFrameRef) -> LispObject {
+    LispObject::cons(frame.left_pos, frame.top_pos)
+}
+#+end_src
+
+Isn't that nice? Now =LispObject::cons= takes two arguments, each of which is something that can be converted to =LispObject=, and those arguments are converted before being passed along to =Fcons=. *The caller doesn't need to worry about types anymore!*
+
+This is not bad, and the Rust =LispObject::cons(4, "abc")= looks a lot like the Lisp =(cons 4 "abc")=. But in Lisp it's also common to use *literal syntax* like ='(4 . "abc")=, without calling a function. Can this be done in Rust? Yes, by implimenting *tuple conversion* for =LispObject=:
+
+#+begin_src rust
+impl<S, T> From<(S, T)> for LispObject
+where
+    S: Into<LispObject>,
+    T: Into<LispObject>,
+{
+    fn from(t: (S, T)) -> Self {
+        Self::cons(t.0, t.1)
+    }
+}
+
+#[lisp_fn]
+pub fn frame_position(frame: LispFrameRef) -> (c_int, c_int) {
+    (frame.left_pos, frame.top_pos)
+}
+#+end_src
+
+Now =frame_position= doesn't call =LispObject::cons= at all -- it just uses a *native Rust tuple*! And because it no longer returns a =LispObject=, its *return type* can be updated to the *more specific* =(c_int, c_int)=. Because a tuple of things that can be converted to =LispObject= can itself be converted to =LispObject=, the =lisp_fn= macro will ensure that this function is still properly exported as a Lisp function with =LispObject= inputs and outputs.
+
+Note that because the =From= and =Into= traits are defined in terms of each other, the definition for tuple conversion is *recursive*, and so it can handle *arbitrarily nested tuple pairs* "for free".
+
+* Exercise for the reader
+
+It's possible to convert arbitrarily nested tuple pairs into a =LispObject=. Is it possible to *destructure* a =LispObject= into arbitrarily nested tuple pairs?
+
+* Remacs PRs containing further commentary
+
+- [[https://github.com/remacs/remacs/pull/1182][Make cons generic]]
+- [[https://github.com/remacs/remacs/pull/1213][impl From<(S, T)> for LispObject]]
+- [[https://github.com/remacs/remacs/pull/1215][Add tuple conversions]]
+- [[https://github.com/remacs/remacs/pull/1277][Use impl notation for generics]]
+
+* Footnotes
+
+[fn:1] Irrelevant and boring details have been suppressed.
+
+[fn:2] This implementation uses the [[https://doc.rust-lang.org/nightly/edition-guide/rust-2018/trait-system/impl-trait-for-returning-complex-types-with-ease.html][=impl Trait=]] syntax, new in *Rust 2018*. Without that notation, =LispObject::cons= would be more verbose:
+
+#+begin_src rust
+impl LispObject {
+    pub fn cons<A: Into<LispObject>, D: Into<LispObject>>(car: A, cdr: D) -> Self {
+        unsafe { Fcons(car.into(), cdr.into()) }
+    }
+}
+#+end_src
+
+=impl Trait= is [[https://github.com/rust-lang/rfcs/pull/2444][unpopular with some]], but I love it. Why should I need to come up for names for the types when the names aren't used? We have anonymous functions, why not *anonymous types*?
