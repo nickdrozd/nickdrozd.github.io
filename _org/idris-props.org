@@ -3,7 +3,7 @@
 #+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
 #+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
 #+OPTIONS: timestamp:t title:t toc:nil todo:t |:t
-#+TITLE: Propositional Logic Theorems as Types (in Idris)
+#+TITLE: Propositional Logic Theorems as Types in Idris
 #+DATE: <2019-04-10 Wed>
 #+AUTHOR: Nick Drozd
 #+EMAIL: nicholasdrozd@gmail.com
@@ -116,6 +116,7 @@ dne2pem f = f (\g => g (Right (\x => g (Left x))))
 1. Prove the double negations of PEM, DNE, and the consensus theorem.
 2. Prove that PEM, DNE, Peirce's law, and the consensus theorem are equivalent. DNE -> PEM is already done, so there are eleven more implications to prove. Or you could prove them in a circle if that's too much work.
 3. Prove [[https://en.wikipedia.org/wiki/Contraposition][contraposition]] (=contraposition : (p -> q) -> (q -> Void) -> p -> Void=). Can you prove its converse?
+4. Prove the double negation of =(a -> c) -> (b -> c) -> ((a -> b) -> b) -> c=.
 
 * Discussion Questions
 
