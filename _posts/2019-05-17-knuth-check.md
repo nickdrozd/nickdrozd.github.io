@@ -88,7 +88,7 @@ In the future, I'd like to find a more substantial bug, especially one in Knuth'
 
 -   [How to Get a Knuth Check](https://kevinlawler.com/knuth)
 
-    General advice for finding errors in Knuth books. It mostly applies to techinical errors, which mine are not. It does have one suggestion that I took seriously:
+    General advice for finding errors in Knuth books. It mostly applies to technical errors, which mine are not. It does have one suggestion that I took seriously:
 
     > It is better to wait until you have a collection of errors to send in. Bundling several legitimate but low-grade errors together can increase the chance that one is actually treated as an error or a suggestion. Sending several errors in piecemeal could cause each of them to be dismissed out of hand.
 
