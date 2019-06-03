@@ -169,3 +169,6 @@ Blog posts from the creator of Remacs: [[http://www.wilfred.me.uk/blog/2017/04/3
 Hacker News: [[https://news.ycombinator.com/item?id=13378247][1]] [[https://news.ycombinator.com/item?id=14782380][2]] [[https://news.ycombinator.com/item?id=18182742][3]] [[https://news.ycombinator.com/item?id=19276751][4]]
 
 Reddit: [[https://www.reddit.com/r/emacs/comments/8tovcg/ask_reddit_remacs_whos_using_remacs/][1]] [[https://www.reddit.com/r/emacs/comments/a40s6d/emacs_maintainers_view_of_the_remacs_emacs_port/][2]] [[https://www.reddit.com/r/emacs/comments/76u8sb/these_weeks_in_remacs_iii/][3]] [[https://www.reddit.com/r/rust/comments/704vs3/remacs_worth_it/][4]]
+
+* Where has this FAQ been discussed?
+Reddit: [[https://www.reddit.com/r/emacs/comments/befzdd/remacs_faq/][1]]
