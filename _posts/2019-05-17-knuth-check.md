@@ -102,6 +102,23 @@ In the future, I'd like to find a more substantial bug, especially one in Knuth'
 
 -   Miscellaneous: [#1](http://ed-thelen.org/KnuthCheck.html) [#2](http://www.club.cc.cmu.edu/~ajo/knuth-check.html) [#3](http://joaoff.com/2008/02/25/a-reward-check-from-donald-knuth/) [#4](https://www.quora.com/What-is-it-like-to-receive-a-Knuth-reward-check) [#5](http://www.joshwakefield.com/knuth/) [#6](http://www.righto.com/2011/05/my-knuth-reward-check.html)
 
+
+# Update <span class="timestamp-wrapper"><span class="timestamp">&lt;2019-06-03 Mon&gt;</span></span>
+
+The day after I posted this article, somebody [submitted it to **Hacker News**](https://news.ycombinator.com/item?id=19948517), where it received 140 comments. And many of them were good!
+
+Perhaps most importantly, [one commenter claimed](https://news.ycombinator.com/item?id=19949054) that the *sometime* typo was **not present in the first edition** of Volume 3. I went to the library to look it up myself, and it's true: the typo was introduced in the second edition. This is good news for pedants and scavengers like me; it suggests that new bugs might always arise, and the number of bugs will never reach zero.
+
+My description of the faster search algorithm received quite a bit of scrutiny. Many were confused by the phrase "tack the desired item on to the end of the array" &#x2013; what kind of memory operation is that exactly? Others missed that part of the algorithm entirely, and assumed the algorithm was to search past the array bounds and assume that the desired key is bound to turn up sooner or later. The latter confusion might have been solved with clearer exposition, but the former seems to miss the point. After all, the algorithm is abstract, and how it gets implemented in a real programming language is a separate issue.
+
+There was also a [lively discussion](https://news.ycombinator.com/item?id=19949810) about whether the algorithm provides any speedup at all in light of modern architecture and compilers. Much of it is over my head, and it's worth reading. The consensus seems to be that sometimes it works, and sometimes it doesn't.
+
+By the way, Knuth mentions a variation of that algorithm in the third chapter of his *Selected Papers on Computer Science* ("Algorithms", 1977). There the algorithm iterates backwards through the list after *prepending* the item to the beginning. Just imagine what a **shitshow** it would have been if I had used that version!
+
+The article was also [posted to Reddit](https://www.reddit.com/r/programming/comments/bq5sxz/i_got_a_knuth_check_donald_knuth_for_0x300/), where the discussion was much worse.
+
+Finally, as predicted, there were indeed at least two bugs in this post. The first was pointed out by many commenters: *techinical* for *technical*. The second was pointed out by [just one](https://github.com/nickdrozd/nickdrozd.github.io/issues/1): a typo in the algebra in the Karatsuba multiplication section.
+
 # Footnotes
 
 <sup><a id="fn.1" href="#fnr.1">1</a></sup> To be clear, there's also a lot of weird stuff, like [the bubble sort machine](https://nickdrozd.github.io/2018/11/02/bubble.html).
