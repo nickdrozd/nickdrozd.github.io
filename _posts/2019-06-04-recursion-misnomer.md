@@ -23,7 +23,9 @@ Traceback (most recent call last):
 RecursionError: maximum recursion depth exceeded
 {% endhighlight %}
 
-`RecursionError`. The error is that the recursion is unbounded. **How does Python know what caused the error?** [According to the docs](https://docs.python.org/3/library/exceptions.html#RecursionError), `RecursionError` "is raised when the interpreter detects that the **maximum recursion depth** (see `sys.getrecursionlimit()`) is exceeded."
+`RecursionError`. The error is that the recursion is unbounded. **How does Python know what caused the error?**
+
+[According to the docs](https://docs.python.org/3/library/exceptions.html#RecursionError), `RecursionError` "is raised when the interpreter detects that the **maximum recursion depth** (see `sys.getrecursionlimit()`) is exceeded."
 
 {% highlight nil %}
 >>> import sys
@@ -97,7 +99,7 @@ Traceback (most recent call last):
 RecursionError: maximum recursion depth exceeded
 {% endhighlight %}
 
-`RecursionError: maximum recursion depth exceeded`. **But there was no recursion!** It would be more accurate and less loaded to say `StackLimitError: maximum call stack depth exceeded`.
+`RecursionError: maximum recursion depth exceeded`. **But there was no recursion!** It would be more accurate to say `StackLimitError: maximum call stack depth exceeded`.
 
 `f1000` will run just fine if the "maximum recursion depth" (really, the maximum call stack depth) is adjusted:
 
