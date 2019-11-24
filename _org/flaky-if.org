@@ -147,7 +147,7 @@ For Challenge #3, I changed the =random= call in the =if= macro to =(random 1000
 
 Eva Lu Ator disagrees, saying that the two definitions are equivalent, and that Alyssa's solution is actually a little slower. Who is right?
 
-4. Louis Reasoner finds it wasteful to call =random= on every invocation of =flaky-if=. Instead, he thinks it should suffice to call it just once at macro definition time:
+5. Louis Reasoner finds it wasteful to call =random= on every invocation of =flaky-if=. Instead, he thinks it should suffice to call it just once at macro definition time:
 
 #+begin_src emacs-lisp
 (let ((flip (zerop (random 100))))
@@ -159,9 +159,11 @@ Eva Lu Ator disagrees, saying that the two definitions are equivalent, and that 
 
 What does his version of =flaky-if= do?
 
+6. The goal of this prank is ultimately to lead the mark into a debugging hell from which they may never return. The best solution, therefore, is the one that is hardest to debug. With that in mind, is it better to use a macro that behaves randomly at compile-time or at run-time? Does it make a difference if the mark is evaluating code interactively or byte-compiling? Is there a way to combine compile-time and run-time randomness to make the behavior even harder to debug?
+
 * Credits
 
-The flaky =if= challenge was initially posed by [[https://begriffs.com/][Joe "begriffs" Nelson]]. The =setf= line in the solution to Challenge #2 was developed by [[https://github.com/ebpa][Erik Anderson]].
+The flaky =if= challenge was initially posed by [[https://begriffs.com/][Joe "begriffs" Nelson]]. The =setf= line in the solution to Challenge #2 was developed by [[https://github.com/ebpa][Erik Anderson]]. [[https://nullprogram.com/][Christopher "skeeto" Wellons]] raised some issues concerning byte-compilation.
 
 * Footnotes
 
