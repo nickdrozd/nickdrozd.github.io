@@ -1,0 +1,54 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:nil todo:t |:t
+#+TITLE: Modified Emacs Mac Modifiers
+#+DATE: <2019-12-28 Sat>
+#+AUTHOR: Nick Drozd
+#+EMAIL: nicholasdrozd@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 27.0.50 (Org mode 9.2.1)
+#+JEKYLL_LAYOUT: post
+#+JEKYLL_CATEGORIES:
+#+JEKYLL_TAGS:
+
+Here's the layout of the bottom row of a standard *Mac keyboard*[fn:1]:
+
+#+begin_src
++-----+-----+-----+-----+-------------------+-----+-----+
+|     |     |     |     |                   |     |     |
+|Fn   |Ctrl |Optn |Cmd  |       Space       |Cmd  |Optn | [arrows]
++-----+-----+-----+-----+-------------------+-----+-----+
+#+end_src
+
+Notice that there is *no Control key on the right side*. This is not normally a problem, as the keybindings for everyday actions on a Mac (cut, paste, find, refresh, etc) are the same as *CUA* keybindings but with the Control key replaced by the Command key (e.g. =Cmd-a= for select-all instead of =Ctrl-a=).
+
+*Not Emacs though.* No, when Emacs says "Control", it means Control. Everything in Emacs runs through the Control key, and that means everything runs through your left pinky. It's an arthritic nightmare, like something out of a /Saw/ movie. My hand hurts just thinking about it.
+
+Some will grin and bear it and grind through the pain, perhaps thinking that this is just what it takes to use Emacs. *Don't do it. "Emacs pinky" is not a badge of honor. You deserve better.*
+
+There's an easy solution to this horrible situation:
+
+#+begin_src emacs-lisp
+(when (eq system-type 'darwin)
+  (setq
+   ns-command-modifier 'control
+   ns-option-modifier 'meta
+   ns-control-modifier 'super
+   ns-function-modifier 'hyper))
+#+end_src
+
+With this, you can use the Command key instead of the physical Control key, improving the keyboard layout in two major ways. First, it makes it possible to use *either hand* to hit (what Emacs thinks is) the "Control" key, rather than just the left. Second, *thumbs* can be used instead of pinkies. *The ergonomic benefits of this change cannot be overstated.*
+
+Oh, and then rebind CapsLock to Command at the system level. CapsLock is a dumbass key, and rebinding it will leave you with *three "Control" keys*.
+
+*Perversely*, the version of Emacs that comes installed on Macs[fn:2] does not allow for this change. If you want to use Emacs but you can't install an up-to-date version, you have no choice but to grind your left pinky into dust.
+
+* Footnotes
+
+[fn:1] This applies to Mac laptops as well as wireless Mac keyboards. Desktop Mac keyboards with a dedicated numpad have right-side Control keys, but those are relatively uncommon.
+
+[fn:2] Version 22, from 2007. As I understand it, this was the last version of Emacs licesnced under GPLv2, and Apple won't use anything with GPLv3.
