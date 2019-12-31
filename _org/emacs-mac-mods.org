@@ -47,6 +47,26 @@ Oh, and then rebind CapsLock to Command at the system level. CapsLock is a dumba
 
 *Perversely*, the version of Emacs that comes installed on Macs[fn:2] does not allow for this change. If you want to use Emacs but you can't install an up-to-date version, you have no choice but to grind your left pinky into dust.
 
+*Addendum <2019-12-31 Tue>*
+
+[[https://github.com/nickdrozd/nickdrozd.github.io/issues/2][A commenter]] pointed out that *Japanese Mac keyboards* have a different bottom row layout, and therefore objected to my use of the word *"standard"*, suggesting that it be replaced with the less normative "US QWERTY". The bottom row on a Japanese Mac keyboard looks like this (the alignment will be off because I don't feel like using fullwidth characters):
+
+#+begin_src
++-----+-----+-----+-----+---------------+-----+-----+-----+
+|     |     |     |     |               |     |     |     |
+|Caps |Optn |Cmd  |英数  |     Space     |かな |Cmd  |Fn   | [arrows]
++-----+-----+-----+-----+---------------+-----+-----+-----+
+#+end_src
+
+This layout is unusual in a few ways:
+
+1. *CapsLock in the far corner.* CapsLock should be abolished entirely, but if must be included, the more marginal the location the better.
+2. *A very small Space key,* making room for an additional modifier key. I would love to have this, since personally I only use my right thumb for Space, and all my keyboards show a worn-down spot on the Space key below the N and M keys. Most of the Space key is wasted space, which I guess is appropriate in a horrible way.
+3. *The 英数 (/eisu/) key.* This toggles between Japanese and Roman characters. More generally, it might toggle betweeen Japanese and non-Japanese characters, but I have no idea how this works in practice.
+4. *The かな (kana) key.* This toggles between the Japanese hiragana and katakana syllabaries. It might also be used for kanjis? I don't know Japanese and I've never used one of these keyboards, but it's something like that.
+
+Clearly this post will be of limited value to users of Japanese Mac keyboards. But what about the word "standard"? Well, [[https://keyshorts.com/blogs/blog/37615873-how-to-identify-macbook-keyboard-localization][this list]] purports to show all the available physical Mac keyboard layouts, and as far as I can tell, *every single Mac keyboard except for Japanese uses the same modifier key layout*. Based on this finding, I am comfortable labeling the Japanese layout as *"non-standard"*. There is no need to specify any further details ("US", "QWERTY", etc) because this post only deals with the bottom row, which is almost universal.
+
 * Footnotes
 
 [fn:1] This applies to Mac laptops as well as wireless Mac keyboards. Desktop Mac keyboards with a dedicated numpad have right-side Control keys, but those are relatively uncommon.
