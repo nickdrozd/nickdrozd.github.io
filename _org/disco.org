@@ -1,0 +1,62 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: The Disco Fallacy
+#+date: <2020-02-28 Fri>
+#+author: Nick Drozd
+#+email: nicholasdrozd@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 28.0.50 (Org mode 9.3)
+#+jekyll_layout: post
+#+jekyll_categories:
+#+jekyll_tags:
+
+The *disco fallacy* is a dumb pattern of reasoning whereby an object is said to have or not have some property on the basis of emotion or ideology, without consideration for whether the object really has that property. Schematically, the reasoning takes a form along the lines of the following:
+
+1. Property P is bad.
+2. But object X is good.
+3. Therefore, X cannot be P.
+
+Does this pattern have an established name? I don't know. I call it "the disco fallacy" because it is often employed by fans of those *classic rock musicians* who got involved with disco. Disco music was quite fashionable from about 1975 to 1979, and lots of rockers ended up releasing some disco songs. This caused anger among some of their fans, and to this day classic rock fans will *deny* that their favorite act did disco.
+
+I once got into an argument with some guy about whether a certain *David Bowie* song, namely *"The Secret Life of Arabia"* (TSLOA), was a disco song. (If you have never heard this song, go listen to it for context. If you have heard it, go listen to it again, because it's great.) The argument went more or less like this:
+
+- Me: TSLOA is disco.
+- Him: No it isn't.
+- Me: Of course it is. Listen to that *piano*, listen to those *handclaps*. It's disco.
+- Him: No it isn't. That's just your opinion.
+- Me: You're an idiot.
+
+I may not have said that last part, but I certainly thought it, because it isn't "just my opinion". It isn't a matter of opinion at all; and while there may be gray areas at the margins, *a song's genre is a simple matter of fact*.
+
+Now, I claimed that TSLOA is a disco song. What would a reasonable counterargument have looked like? The other guy could have said something like, disco is primarily characterized by *four-on-the-floor* drums, and TSLOA doesn't have such a pronounced beat. At that point we could have gotten into a discussion of exactly what disco is, and exactly where to draw the line. It would have been reasonable for him to have said, perhaps, that TSLOA has a strong disco influence, but is still not a true disco song. That would have been a point where perhaps we could have reached some kind of agreement, some kind of understanding.
+
+ But the other guy didn't engage with the argument in those terms at all, which leads me to believe that there were *emotions* at play. In particular, his judgment was likely clouded by a crude and base *anti-disco bias*, and this bias caused him to think like this:
+
+1. Disco is bad.
+2. But David Bowie is good.
+3. Therefore, a David Bowie song can't be disco.
+
+Thus: the disco fallacy. Naturally, this kind of reasoning is never *explicit*. It's too stupid. Saying it aloud would be embarrassing, so it tends to operate in the background.
+
+As I said before, this kind of thing comes up with other classic rock acts. Consider the controversial *Grateful Dead* song *"Shakedown Street"*. I guess it isn't controversial anymore, because nobody cares, but fans didn't like it when it came out because it's a disco song, and obviously so. Anyway, check out the Youtube comments for this song, and you'll numerous commenters refer to it as "funk". I interpret this as a *coping mechanism*; the word "funk" acts as a sort of euphemism to allow for addressing the song's obvious disco nature without admitting it outright. Again, the fundamental reasoning is that /this song cannot be disco because disco is bad and the Grateful Dead are good/.
+
+Arguments about disco are frivolous, of course, and unimportant. David Bowie is dead, the Grateful Dead is dead, disco is dead, who cares? However, the disco fallacy shows up in all kinds of places. I won't give any specific examples, because needless to say, specific accusations of disco-fallacy reasoning are *inflammatory*, and the sites where it occurs are inherently emotional and even *political*. Generally speaking though, the disco fallacy tends to crop up when someone is defending the *purity* of something important to them, or when they are trying to sort out the *true believers* of this or that.
+
+* Discussion Questions
+
+1. What are some other examples of the disco fallacy?
+2. What are some defining characteristics of disco?
+3. Is TSLOA a disco song? What about "Shakedown Street"?
+4. Did you answer Question 3 before answering Question 2? If so, was that a smart thing to do?
+5. Why do classic rock fans get so emotional and irrational when it comes to disco?
+6. Here's [[https://www.scottaaronson.com/blog/?p=1799][Scott Aaronson discussing theories of consciousness]]:
+   #+begin_quote
+   The test of such a theory is whether it can produce results agreeing with “commonsense intuition”: for example, whether it can affirm, from first principles, that (most) humans are conscious; that dogs and horses are also conscious but less so; that rocks, livers, bacteria colonies, and existing digital computers are not conscious (or are hardly conscious); and that a room full of people has no “mega-consciousness” over and above the consciousnesses of the individuals. The reason it’s so important that the theory uphold “common sense” on these test cases is that, given the experimental inaccessibility of consciousness, /this is basically the only test available to us./ If the theory gets the test cases “wrong” (i.e., gives results diverging from common sense), it’s not clear that there’s anything else for the theory to get “right.”
+   #+end_quote
+   What are some "test cases" for disco?
+7. Is disco really dead? Is Bowie really dead?
