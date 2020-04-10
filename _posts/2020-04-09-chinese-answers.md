@@ -19,7 +19,7 @@ Recently I wrote about [my attempt to learn **how to look up Chinese characters*
 
 2.  **Is there a method, or even a set of rules of thumb, for identifying a character’s primary radical?**
 
-    > There are heuristics, but it's best to learn these as you go. Wanting to see the whole system at one go seems reasonable when you're starting, but it's hard to digest and gives a mistaken impression of philosophical consistency. [Here is] a link to a guide I once wrote to the system. <https://www.researchgate.net/publication/340515798_The_Radicals_Classifiers_of_the_Traditional_Chinese_Dictionary>
+    > There are heuristics, but it's best to learn these as you go. Wanting to see the whole system at one go seems reasonable when you're starting, but it's hard to digest and gives a mistaken impression of philosophical consistency. [[Here is] a link to a guide I once wrote to the system.](https://www.researchgate.net/publication/340515798_The_Radicals_Classifiers_of_the_Traditional_Chinese_Dictionary)
 
     *Note:* This guide basically answers most of my questions. In fact, I may not have written my initial post if I had found it.
 
@@ -33,7 +33,7 @@ Recently I wrote about [my attempt to learn **how to look up Chinese characters*
     >
     > The graph 秋 for <span class="underline">qiū</span> "autumn" appears to be made up of two possible radicals, 禾 and 火. Which is it placed under in the dictionary? Under 禾 <span class="underline">hé</span> "rice", because 秋 etymologically seems to mean "harvest time."
     >
-    > The element 火 in this graph is is a simplification — a pen-convenience. Historically, the full form of this character was 龝. The element on the right is <span class="underline">guī</span> 龜 "(land) tortoise". 龜 is also a radical in the <span class="underline">Kāngxī zìdiǎn</span>, but a pretty rare one.
+    > The element 火 in this graph is a simplification — a pen-convenience. Historically, the full form of this character was 龝. The element on the right is <span class="underline">guī</span> 龜 "(land) tortoise". 龜 is also a radical in the <span class="underline">Kāngxī zìdiǎn</span>, but a pretty rare one.
     >
     > Now, what do tortoises have to do with autumn? There may be an etymological connection (remember that much etymology is speculative). But probably it's there for sound. That is, 龜 and 秋 were once close homophones, something not possible to know if you only know Mandarin.
     >
@@ -41,7 +41,7 @@ Recently I wrote about [my attempt to learn **how to look up Chinese characters*
     >
     > Another example is 相, commonly read <span class="underline">xiāng</span> "mutually, one to another" and also read <span class="underline">xiàng</span> "to examine, to observe", etc. etc. Both components, 木 and 目, are common radicals. Which is the one I should use to look up 相? Both are pronounced <span class="underline">mù</span> in Mandarin and something like <span class="underline">muk</span> in the earlier language; neither of those sounds much like xiang. So it's hard to tell which element in 相 is phonetic and which, by elimination, is semantic.
     >
-    > But here the key is semantics. 木 means tree or wood and 目 means eye. The meaning "eye" is closer to "examine", I think you'd agree, so as a likely semantophore it's a better candidate to be the classifer. And that leaves 木 as phonetic, then? Probably 木 is an orthographic variant of <span class="underline">qiáng</span> 爿, which would be a plausible phonetic. There's some discusson of this case at  <https://www.researchgate.net/publication/323317663_Phonology_in_the_Chinese_Script_and_its_Relationship_to_Early_Chinese_Literacy>.
+    > But here the key is semantics. 木 means tree or wood and 目 means eye. The meaning "eye" is closer to "examine", I think you'd agree, so as a likely semantophore it's a better candidate to be the classifer. And that leaves 木 as phonetic, then? Probably 木 is an orthographic variant of <span class="underline">qiáng</span> 爿, which would be a plausible phonetic. [Here's some discusson of this case.](https://www.researchgate.net/publication/323317663_Phonology_in_the_Chinese_Script_and_its_Relationship_to_Early_Chinese_Literacy)
     >
     > An example of a radical that is a load of BS is 土 as radical under which 垂 is placed. There's no real relationship between the two, but 垂 has to go somewhere, and 土 sort of works. There are other cases like this shown toward the end of my radical guide.
 
