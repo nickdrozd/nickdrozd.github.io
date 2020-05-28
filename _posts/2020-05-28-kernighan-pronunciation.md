@@ -1,0 +1,240 @@
+---
+title: "The Pronunciation of 'Kernighan', according to Foreign-Language Wikipedia"
+date: <span class="timestamp-wrapper"><span class="timestamp">&lt;2020-05-28 Thu&gt;</span></span>
+layout: post
+categories:
+tags:
+---
+
+# Table of Contents
+
+1.  [Intro](#org8fb5a12)
+2.  [**West Asian**](#orgd042cd6)
+    1.  [Arabic Script](#org7cd9282)
+        1.  [Standard Arabic : براين كيرنيغان](#org32c5e97)
+        2.  [Egyptian Arabic : براين كيرنيجان](#org7fbf836)
+        3.  [Persian : برایان کرنیگان](#org049e876)
+        4.  [Azeri Turkish (Iranian) : برایان کرنیقان](#org675d053)
+    2.  [Armenian : Բրայան Կերնիգան](#org5c5975c)
+    3.  [Cyrillic](#orgda50279)
+        1.  [Macedonian : Брајан Кернихан](#org540cd3a)
+        2.  [Russian : Брайан Керниган](#orga5207f4)
+        3.  [Serbian : Брајан Керниген](#orgc38d50c)
+        4.  [Ukranian : Браян Керніган](#org4e7f3ea)
+    4.  [Georgian : ბრაიან კერნიგენი](#org0fa2bad)
+    5.  [Greek : Μπράιαν Κέρνιχαν](#org0e892f4)
+    6.  [Hebrew : בריאן קרניגהאן](#orgb26ef80)
+3.  [**East Asian**](#orge270ede)
+    1.  [Chinese : 布萊恩·柯林漢](#org9704999)
+    2.  [Japanese : ブライアン・カーニハン](#org9841f56)
+    3.  [Korean : 브라이언 커니핸](#org6fcd67f)
+4.  [**South Asian**](#orgdcf13ca)
+    1.  [Bengali : ব্রায়ান উইলসন কার্নিংহান](#org38993ef)
+    2.  [Malayalam : ബ്രയാൻ കെർണിഹാൻ](#org3c05a3a)
+    3.  [Marathi : ब्रायन केर्निघन](#orgdf7ed35)
+
+
+<a id="org8fb5a12"></a>
+
+# Intro
+
+**"Kernighan"**. It's the "k" in **`awk`**. **But how is it pronounced?** In particular, how should the **"gh" digraph** be handled? This is something of a shibboleth in programmer circles. The obvious way is to say the "gh" as a **"g"**, so that "Kernighan" rhymes with **"turn again"**. But Brian Kernighan himself, followed by those "in the know", pronounces the "gh" as an **"h"**, as in **"turn a hand"**. He says so in [this interview](https://www.cs.cmu.edu/~mihaib/kernighan-interview/):
+
+> M: What is the correct way to pronounce your name? I heard that it is not the obvious way?
+>
+> K: It's pronounced Kernihan, **the g is silent**.
+
+Now, imagine that you are writing a **Wikipedia article about Brian Kernighan** in a language other than [English](https://en.wikipedia.org/wiki/Brian_Kernighan). What do you do about the pronunciation of that name? If you are writing in a lanugage that uses the **Roman alphabet**, then you can **punt** on the issue by using the English spelling and leaving the pronunciation unclear. This is done in the Brian Kernighan Wikipedia articles in [Indonesian](https://id.wikipedia.org/wiki/Brian_Kernighan), [Kurdish](https://ku.wikipedia.org/wiki/Brian_Kernighan), [Hungarian](https://hu.wikipedia.org/wiki/Brian_Kernighan), and all other Roman-alphabet languages. A few of them specify the actual pronunciation, but most of them don't.
+
+However, if you are writing in a script other than the Roman alphabet, you will be forced to **disambiguate** the "gh" digraph and **commit** to some pronunciation or other. What follows is a survey of these **transliterations** (as of May 2020). My knowledge of these languages and their writing systems is somewhat patchy, and more knowledgeable readers will surely be able to correct me in places. On the other hand, relatively few people take a bird's-eye view to orthography across languages, so hopefully every reader will find something interesting.
+
+Languages will be grouped as **West Asian**, **East Asian**, and **South Asian**.
+
+
+<a id="orgd042cd6"></a>
+
+# **West Asian**
+
+
+<a id="org7cd9282"></a>
+
+## Arabic Script
+
+
+<a id="org32c5e97"></a>
+
+### [Standard Arabic](https://ar.wikipedia.org/wiki/%D8%A8%D8%B1%D8%A7%D9%8A%D9%86_%D9%83%D9%8A%D8%B1%D9%86%D9%8A%D8%BA%D8%A7%D9%86) : براين كيرنيغان
+
+The "gh" is represented by **[غ](https://en.wikipedia.org/wiki/%D8%BA)**. Normally this letter represents a throaty sound somelike like the French "r", but in foreign words it is sometimes used for "g". Going from Arabic to English, it is often represented as "gh", as in *Baghdad* بغداد.
+
+
+<a id="org7fbf836"></a>
+
+### [Egyptian Arabic](https://arz.wikipedia.org/wiki/%D8%A8%D8%B1%D8%A7%D9%8A%D9%86_%D9%83%D9%8A%D8%B1%D9%86%D9%8A%D8%AC%D8%A7%D9%86) : براين كيرنيجان
+
+The "gh" is represented by **[ج](https://en.wikipedia.org/wiki/%D8%AC)**. Normally this letter makes a "j" sound, as in *James*, but in Egypt it is pronounced as a "g". The Arabic name for Egypt is *Misir*. Misir loves company.
+
+
+<a id="org049e876"></a>
+
+### [Persian](https://fa.wikipedia.org/wiki/%D8%A8%D8%B1%D8%A7%DB%8C%D8%A7%D9%86_%DA%A9%D8%B1%D9%86%DB%8C%DA%AF%D8%A7%D9%86) : برایان کرنیگان
+
+The "gh" is represented by **[گ](https://en.wikipedia.org/wiki/%DA%AF)**, which is just "g". It's one of a handful of letters used in Persian (and languages like Urdu) that is not used in Arabic, though it is a variation of **[ک](https://en.wikipedia.org/wiki/%DA%A9)**, "k", which is used as the "K" in "Kernighan".
+
+
+<a id="org675d053"></a>
+
+### [Azeri Turkish (Iranian)](https://azb.wikipedia.org/wiki/%D8%A8%D8%B1%D8%A7%DB%8C%D8%A7%D9%86_%DA%A9%D8%B1%D9%86%DB%8C%D9%82%D8%A7%D9%86) : برایان کرنیقان
+
+The "gh" is represented by **[ق](https://en.wikipedia.org/wiki/%D9%82)**. In Arabic, this letter represents a throaty sound that is distinct from ﻍ, but in Persian the two letters are pronounced the same. I don't know for sure, but I assume the same is true in Azeri Turkish (as spoken in northern Iran). In any case, this is a "g"-like sound.
+
+
+<a id="org5c5975c"></a>
+
+## Armenian : Բրայան Կերնիգան
+
+No entry for Brian Kernighan, but there is an article on **[AWK](https://hy.wikipedia.org/wiki/AWK)**, and it refers to Բրայան Կերնիգան. The "gh" is represented by **գ**. Different dialects of Armenian **swap voicings** for certain consonants, and գ is sometimes pronounced as "g" and sometimes as "k". For that matter, **Կ** is sometimes pronounced as "k" and sometimes as "g", so Կերնիգան could be pronounced as "Kernigan" or "Gernikan".
+
+
+<a id="orgda50279"></a>
+
+## Cyrillic
+
+
+<a id="org540cd3a"></a>
+
+### [Macedonian](https://mk.wikipedia.org/wiki/%D0%91%D1%80%D0%B0%D1%98%D0%B0%D0%BD_%D0%9A%D0%B5%D1%80%D0%BD%D0%B8%D1%85%D0%B0%D0%BD) : Брајан Кернихан
+
+The "gh" is represented by **[х](https://en.wikipedia.org/wiki/Kha_(Cyrillic))**, which is used for an unvoiced throat sound. Slavic languages mostly lack a pure "h" sound, so I am inclined to call this "h"-like.
+
+
+<a id="orga5207f4"></a>
+
+### [Russian](https://ru.wikipedia.org/wiki/%D0%9A%D0%B5%D1%80%D0%BD%D0%B8%D0%B3%D0%B0%D0%BD,_%D0%91%D1%80%D0%B0%D0%B9%D0%B0%D0%BD) : Брайан Керниган
+
+The "gh" is represented by **[г](https://en.wikipedia.org/wiki/Ge_(Cyrillic))**, which is usually pronounced as "g", though some dialects pronounce it more like "h". According to Wikipedia, it often used to represent "h" in foreign words, as in Гарри Поттер for "Harry Potter".
+
+
+<a id="orgc38d50c"></a>
+
+### [Serbian](https://sr.wikipedia.org/wiki/%D0%91%D1%80%D0%B0%D1%98%D0%B0%D0%BD_%D0%9A%D0%B5%D1%80%D0%BD%D0%B8%D0%B3%D0%B5%D0%BD) : Брајан Керниген
+
+Same as entry for Russian.
+
+
+<a id="org4e7f3ea"></a>
+
+### [Ukranian](https://uk.wikipedia.org/wiki/%D0%91%D1%80%D0%B0%D1%8F%D0%BD_%D0%9A%D0%B5%D1%80%D0%BD%D1%96%D0%B3%D0%B0%D0%BD) : Браян Керніган
+
+The "gh" is represented by **[г](https://en.wikipedia.org/wiki/Ge_(Cyrillic))**, which in Ukranian is pronounced as "h".
+
+
+<a id="org0fa2bad"></a>
+
+## Georgian : ბრაიან კერნიგენი
+
+No entry for Brian Kernighan, but there is an article on **["Hello world"](https://ka.wikipedia.org/wiki/Hello_world)** (გამარჯობა სამყარო), and it refers to ბრაიან კერნიგენი. The important letter there is **[გ](https://en.wikipedia.org/wiki/Gani_(letter))**, which is a "g".
+
+
+<a id="org0e892f4"></a>
+
+## Greek : Μπράιαν Κέρνιχαν
+
+Greek Wikipedia doesn't have an entry for Brian Kernighan, but there is one for ***[The C Programming Language](https://el.wikipedia.org/wiki/The_C_Programming_Language)***. It mentions **Μπράιαν Κέρνιχαν**, using the "h"-like **χ** for "gh". There is also an article on **[AWK](https://el.wikipedia.org/wiki/AWK)**, and it mentions "Brian Kernighan". **Untransliterated Roman-alphabet text is mixed freely into the surrounding Greek:**
+
+> Η AWK δημιουργήθηκε στα Bell Labs στα τέλη της δεκαετίας του 1970, και το όνομά της προέρχεται από τα επίθετα των δημιουργών της — Alfred Aho, Peter Weinberger και Brian Kernighan.
+
+**Is this a common practice in Greek?**
+
+
+<a id="orgb26ef80"></a>
+
+## [Hebrew](https://he.wikipedia.org/wiki/%D7%91%D7%A8%D7%99%D7%90%D7%9F_%D7%A7%D7%A8%D7%A0%D7%99%D7%92%D7%94%D7%90%D7%9F) : בריאן קרניגהאן
+
+This is a curious choice, as the "gh" is represented letter-for-letter as **[ג](https://en.wikipedia.org/wiki/%D7%92)** and then **[ה](https://en.wikipedia.org/wiki/%D7%94)**. I don't know how this combination is pronounced, or if it is standard in Hebrew. There don'e seem to be any mentions of Brian Kernighan on **Yiddish** Wikipedia, although the entry on **[C++](https://yi.wikipedia.org/wiki/%2B%2BC)** does mention **Bjarne Stroustrup**, **ביארנע סטרויסטרופ**. The [Hebrew article](https://he.wikipedia.org/wiki/%D7%91%D7%99%D7%90%D7%A8%D7%9F_%D7%A1%D7%98%D7%A8%D7%95%D7%A1%D7%98%D7%A8%D7%95%D7%A4) spells his name **ביארן סטרוסטרופ**
+
+
+<a id="orge270ede"></a>
+
+# **East Asian**
+
+
+<a id="org9704999"></a>
+
+## [Chinese](https://zh.wikipedia.org/wiki/%E5%B8%83%E8%90%8A%E6%81%A9%C2%B7%E6%9F%AF%E6%9E%97%E6%BC%A2) : 布萊恩·柯林漢
+
+The "ghan" is represented by **漢**, *han*. Chinese is not written using **letters**, but rather with a dizzying array of **[characters](https://nickdrozd.github.io/2020/03/09/chinese.html)**. The characters are associated with both sounds and meanings. There is apparently a somewhat standard method for [transcribing foreign words into Chinese](https://en.wikipedia.org/wiki/Transcription_into_Chinese_characters).
+
+-   Brian
+    -   [布](https://en.wiktionary.org/wiki/%E5%B8%83) *bu*
+    -   [萊](https://en.wiktionary.org/wiki/%E8%90%8A) *lai*
+    -   [恩](https://en.wiktionary.org/wiki/%E6%81%A9) *en*
+-   Kernighan
+    -   [柯](https://en.wiktionary.org/wiki/%E6%9F%AF) *ke*
+    -   [林](https://en.wiktionary.org/wiki/%E6%9E%97) *lin*
+        -   This seems to be **phonetically wrong**. Accepting "l" in place of "r", shouldn't this sound like "lni", as in "kelnihan"?
+        -   Perhaps 林 was chosen because it's a common Chinese surname, and Kernighan is a surname. Is **thematic accuracy** an important consideration?
+        -   In **Cantonese**, 林 is pronounced "lam", as in [Carrie Lam](https://en.wikipedia.org/wiki/Carrie_Lam) 林鄭月娥.
+    -   [漢](https://en.wiktionary.org/wiki/%E6%BC%A2) *han*
+        -   This is the name of the Han Chinese people.
+        -   The "simplified" form of this character is [汉](https://en.wiktionary.org/wiki/%E6%B1%89).
+
+
+<a id="org9841f56"></a>
+
+## [Japanese](https://ja.wikipedia.org/wiki/%E3%83%96%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%BB%E3%82%AB%E3%83%BC%E3%83%8B%E3%83%8F%E3%83%B3) : ブライアン・カーニハン
+
+As is typical for foreign words, this name is written using **[katakana](https://en.wikipedia.org/wiki/Katakana)** letters. The "gh" is represented with **ハ**, *ha*. In **[hiragana](https://en.wikipedia.org/wiki/Hiragana)** letters, this name would be written as **ぶらいあん・かにはん**.
+
+-   Brian
+    -   [ブ](https://en.wikipedia.org/wiki/Fu_(kana)) *bu*
+    -   [ラ](https://en.wikipedia.org/wiki/Ra_(kana)) *ra*
+    -   [イ](https://en.wikipedia.org/wiki/I_(kana)) *i*
+    -   [ア](https://en.wikipedia.org/wiki/A_(kana)) *a*
+    -   [ン](https://en.wikipedia.org/wiki/N_(kana)) *n*
+-   Kernighan
+    -   [カ](https://en.wikipedia.org/wiki/Ka_(kana)) *ka*
+    -   [ー](https://en.wikipedia.org/wiki/Ch%C5%8Donpu) (long sound marker)
+    -   [ニ](https://en.wikipedia.org/wiki/Ni_(kana)) *ni*
+    -   [ハ](https://en.wikipedia.org/wiki/Ha_(kana)) *ha*
+    -   [ン](https://en.wikipedia.org/wiki/N_(kana)) *n*
+
+
+<a id="org6fcd67f"></a>
+
+## [Korean](https://ko.wikipedia.org/wiki/%EB%B8%8C%EB%9D%BC%EC%9D%B4%EC%96%B8_%EC%BB%A4%EB%8B%88%ED%95%B8) : 브라이언 커니핸
+
+The [Korean alphabet](https://en.wikipedia.org/wiki/Hangul) is written as individual letters composed into syllable blocks. The "ghan" is represented as **핸**, *hen*. This is similar to **한**, *han*, which is the first syllable in the Korean name of the alphabet, ***hangul***.
+
+-   Brian
+    -   브 *bu*
+    -   라 *rah*
+    -   이 *i*
+    -   언 *un*
+-   Kernighan
+    -   커 *kuh*
+    -   니 *ni*
+    -   핸 *hen*
+        -   [ㅎ](https://en.wikipedia.org/wiki/%E3%85%8E)
+
+
+<a id="orgdcf13ca"></a>
+
+# **South Asian**
+
+There are three South Asian language articles about Brian Kernighan: **Bengali**, **Malayalam**, and **Marathi**. I don't know much about South Asian languages or their alphabets. I don't even know enough to get started on researching it, so I won't try. My question is: **Why are there Brian Kernighan articles in these languages, but not in Hindi or Urdu?**
+
+
+<a id="org38993ef"></a>
+
+## [Bengali](https://bn.wikipedia.org/wiki/%E0%A6%AC%E0%A7%8D%E0%A6%B0%E0%A6%BE%E0%A6%AF%E0%A6%BC%E0%A6%BE%E0%A6%A8_%E0%A6%89%E0%A6%87%E0%A6%B2%E0%A6%B8%E0%A6%A8_%E0%A6%95%E0%A6%BE%E0%A6%B0%E0%A7%8D%E0%A6%A8%E0%A6%BF%E0%A6%82%E0%A6%B9%E0%A6%BE%E0%A6%A8) : ব্রায়ান উইলসন কার্নিংহান
+
+
+<a id="org3c05a3a"></a>
+
+## [Malayalam](https://ml.wikipedia.org/wiki/%E0%B4%AC%E0%B5%8D%E0%B4%B0%E0%B4%AF%E0%B4%BE%E0%B5%BB_%E0%B4%95%E0%B5%86%E0%B5%BC%E0%B4%A3%E0%B4%BF%E0%B4%B9%E0%B4%BE%E0%B5%BB) : ബ്രയാൻ കെർണിഹാൻ
+
+
+<a id="orgdf7ed35"></a>
+
+## [Marathi](https://mr.wikipedia.org/wiki/%E0%A4%AC%E0%A5%8D%E0%A4%B0%E0%A4%BE%E0%A4%AF%E0%A4%A8_%E0%A4%95%E0%A5%87%E0%A4%B0%E0%A5%8D%E0%A4%A8%E0%A4%BF%E0%A4%98%E0%A4%A8) : ब्रायन केर्निघन
