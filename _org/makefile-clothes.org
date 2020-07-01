@@ -49,7 +49,7 @@ tie : shirt
 A few things to note:
 
   - =make= targets use the syntax =<NAME> : <DEP> <DEP> ...=, with instructions listed below.
-  - =all= is the standard default target. If no other target is specified in the =make= command, =all= will get run.
+  - The first target in the makefile is the one that gets run if no target is specified in the =make= command. By convention, the first target is called =all=, but that is only a convention.
   - =$@= is a macro that evaluates to the name of the current target.
   - Normally instructions are printed and then executed. But an instruction prepended with =@= will only get executed.
 
