@@ -30,7 +30,7 @@ I'll exhibit that program later, but before doing that, **the reader should stop
 
 # Program Generation
 
-Here's how I went about it. First, it's easy to write a **Python** program to generate all possible 4-state Turing machine program strings:
+Here's how I went about it. First, it's easy to write a **Python** program to generate **all possible 4-state program strings**:
 
 {% highlight python %}
 COLOR = ('0', '1')
@@ -56,22 +56,22 @@ for i in INSTRUCTIONS:
             print(' '.join((i, j, k)))
 {% endhighlight %}
 
-Note that while it's easy to write code to generate all of them, it's not easy to run it. That's because there are 25,600,000,000 4-state programs, and while it may be possible to generate all of them on a single laptop, it isn't pleasant to attempt. **Aggressive pruning** is required.
+Note that while it's easy to write code to generate all of them, it's not easy to run it. That's because there are **25,600,000,000** 4-state programs, and while it may be possible to generate all of them on a single laptop, it isn't pleasant to attempt. **Aggressive pruning** is required.
 
-The easiest way to cut down on the space of possible programs is to **get rid of the halt state**. BB(n) is the longest running n-state program that halts, so if BBB(n) > BB(n) (as is the case for all n > 2), then the candidate programs are certainly going to be nonhalting. And if the programs are certainly going to be nonhalting, why bother including the halt state at all?
+The easiest way to cut down on the space of possible programs is to **get rid of the halt state**. BB(n) is the longest running n-state program that halts, so if BBB(n) > BB(n) (as is surely the case for all n > 2), then the candidate programs are certainly going to be nonhalting. And if the programs are certainly going to be nonhalting, why bother including the halt state at all?
 
-Call a program ***halt-free*** if none of its states leads to the halt state. There are (4(n+1))<sup>2n</sup> n-state programs, but only (4n)<sup>2n</sup> halt-free n-state programs. For 4-state programs, this brings the total down to a nearly-manageable 4,294,967,296, about one sixth as many.
+Call a program ***halt-free*** if none of its states leads to the halt state. There are (4(n+1))<sup>2n</sup> n-state programs, but only (4n)<sup>2n</sup> halt-free n-state programs. For 4-state programs, this brings the total down to a nearly-manageable **4,294,967,296**, about one sixth as many.
 
-Next, **obviously-stupid programs should be dropped**. For example, any programs whose A0 action points to state A will immediately spin out into dumb infinity, so don't bother printing it; just `continue` the `for` loop and keep going. It's also safe to assume that any program that always prints one or always prints zero will be of no interest, and so on.
+Next, **stupid programs should be dropped**. For example, any programs whose A0 action points to state A will immediately spin out into dumb infinity, so don't bother printing it; just `continue` the `for` loop and keep going. It's also safe to assume that any program that always prints one or always prints zero will be of no interest, and so on.
 
-By now my file of 4-state programs was still over one billion lines long. Even running `wc -l` took around fifteen seconds, so I had to reduce the search space even further. Obvious pruning gave way to **speculative pruning**. This means that programs will be pruned according to guesses about the structure of "productive" programs. For example, the survey conjectures that every state of a BB program will reachable from every other state; or in other words, that spaghetti code is the best way to maximize runtime. I don't know of an easy way to test a program string for this property, but it is at least possible to prune every program string that does not contain all four states. I also made the assumption that most of the program's actions will print one rather than zero. Why? Roughly, the program should be doing something most of the time, and since the tape starts off totally blank (all zeros), most of the time "doing something" will mean printing a one. A 4-state program will have eight print actions, so I got rid of all programs with fewer than five one-prints. That may well turn out to be incorrect, but **there's no choice but to take some risks**.
+By now my file of 4-state programs was still over one billion lines long. Even running `wc -l` took around fifteen seconds, so I had to reduce the search space even further. Obvious pruning gave way to **speculative pruning**, meaning that programs were pruned according to guesses about the structure of "productive" programs. For example, the survey conjectures that every state of a BB program will reachable from every other state; or in other words, that **spaghetti code** is the best way to maximize runtime. I don't know of an easy way to test a program string for this property, but it is at least possible to prune every program string that does not contain all four states. I also made the assumption that **most of the program's actions will print one rather than zero**. Why? Roughly, the program should be doing something most of the time, and since the tape starts off totally blank (all zeros), most of the time "doing something" will mean printing a one. A 4-state program will have eight print actions, so I got rid of all programs with fewer than five one-prints. That may well turn out to be incorrect, but **there's no choice but to take some risks**.
 
 
 # Program Execution
 
 All this pruning got my program file down to around 400,000,000 lines, and from there I started running the programs. Now, every program involved is halt-free, and so will definitely not halt. (Solving the halting problem for halt-free programs is easy: the answer is always NO.) This means that the programs have to **run for only some bounded number of steps**. But what bound? What kind of value should someone expect for BBB(4)? It's greater than 107, but by how much?
 
-My **working hypothesis** has been that BBB(4) < 10,000. I don't know if that's actually true, but it feels true from the relatively thin slice of programs that I've looked at. Supposing that, I can run the programs for 10,000 steps, then look at when each state was last hit. One of them will certainly have been hit last at step 10,000 (why?), so I look to the next greatest last step.
+My **working hypothesis** has been that BBB(4) < 10,000. I don't know if that's actually true, but it feels true from the relatively thin slice of programs that I've looked at. Under that assumption, I can run the programs for 10,000 steps, then look at when each state was last hit. One of them will certainly have been hit last at step 10,000 (why?), so I look to the next greatest last step.
 
 One pattern that comes up a lot is for three states to be all over 9,900 and then one to be between 3,000 and 7,000. Invariably, these numbers all continued to grow when the programs were re-run for longer. Those programs are **duds** because they do not quasihalt. Therefore, I took to checking only the second greatest last step hit, filtering out values over 8,000 or less than 2,000.
 
