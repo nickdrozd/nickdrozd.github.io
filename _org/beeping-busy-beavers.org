@@ -35,6 +35,16 @@ I read all that in the BB survey article, and I thought it would be fun to try a
 
 I'll exhibit that program later, but before doing that, *the reader should stop and consider how they would attempt to search for such a program, or even better, actually do the searching.* See [[http://www.logique.jussieu.fr/~michel/tmi.html][this page]] for the formal details about Turing machine programs.
 
+*UPDATE <2020-09-16 Wed>*
+
+I just found an *even busier* beeping beaver!
+
+- *=1LB 0RC 1RD 0RA 1LC 1LD 1RA 0RD=*
+
+That program quasihalts at step *66349*, at which point there are *0* marks on the tape. So *BBB(4) ≥ 66349* if we are talking about shift score, but the bound on the 4-state sigma score remains *69* (see below).
+
+This discovery was the result of [[https://nickdrozd.github.io/2020/09/14/programmable-turing-machine.html][a *much faster* Turing machine implementation]] as well as *more sophisticated program generation*. The rest of this post is now somewhat outdated. I'll write a new post soon.
+
 * Program Generation
 
 Here's how I went about it. First, it's easy to write a *Python* program to generate *all possible 4-state program strings*:
