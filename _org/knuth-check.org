@@ -138,7 +138,7 @@ I try to make the indexes to my books as complete as possible, or at least to gi
 
 [fn:3] Generalizing this algorithm to longer digits requires some bookkeeping, but isn't too complicated. Still, I would certainly screw up the details, so I'm playing it safe by sticking with an easy example.
 
-[fn:4] Fortunately, the Karatsuba algorithm has been superseded by even faster methods. In March 2019, an algorithm was published requiring [[https://web.maths.unsw.edu.au/~davidharvey/papers/nlogn/][/n log n/]] multiplications. The speedup from this method only applies to numbers that are unimaginably large.
+[fn:4] Fortunately, the Karatsuba algorithm has been superseded by even faster methods. In March 2019, an algorithm was published requiring [[https://hal.archives-ouvertes.fr/hal-02070778/document][/n log n/]] multiplications. The speedup from this method only applies to numbers that are unimaginably large.
 
 [fn:5] This is less pathetic than it sounds, as Knuth's indexes have *Easter eggs* hidden in them. For instance, the index for /*The TeXBook*/ has entries for /Arabic/ and /Hebrew/, and they both point to page 66. But that page doesn't mention either language; instead, it mentions "languages that read from right to left".
 

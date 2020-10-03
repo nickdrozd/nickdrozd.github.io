@@ -129,7 +129,7 @@ Finally, as predicted, there were indeed at least two bugs in this post. The fir
 
 <sup><a id="fn.3" href="#fnr.3">3</a></sup> Generalizing this algorithm to longer digits requires some bookkeeping, but isn't too complicated. Still, I would certainly screw up the details, so I'm playing it safe by sticking with an easy example.
 
-<sup><a id="fn.4" href="#fnr.4">4</a></sup> Fortunately, the Karatsuba algorithm has been superseded by even faster methods. In March 2019, an algorithm was published requiring [*n log n*](https://web.maths.unsw.edu.au/~davidharvey/papers/nlogn/) multiplications. The speedup from this method only applies to numbers that are unimaginably large.
+<sup><a id="fn.4" href="#fnr.4">4</a></sup> Fortunately, the Karatsuba algorithm has been superseded by even faster methods. In March 2019, an algorithm was published requiring [*n log n*](https://hal.archives-ouvertes.fr/hal-02070778/document) multiplications. The speedup from this method only applies to numbers that are unimaginably large.
 
 <sup><a id="fn.5" href="#fnr.5">5</a></sup> This is less pathetic than it sounds, as Knuth's indexes have **Easter eggs** hidden in them. For instance, the index for ***The TeXBook*** has entries for *Arabic* and *Hebrew*, and they both point to page 66. But that page doesn't mention either language; instead, it mentions "languages that read from right to left".
 
