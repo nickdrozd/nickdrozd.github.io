@@ -1,0 +1,96 @@
+---
+title: "The Lin-Rado Busy Beaver Proof"
+date: <span class="timestamp-wrapper"><span class="timestamp">&lt;2020-12-15 Tue&gt;</span></span>
+layout: post
+categories:
+tags:
+---
+If you go to the **[Online Encyclopedia of Integer Sequences](https://oeis.org/)** and look up the **[Busy Beaver sequence](https://oeis.org/A060843)**, you will find this:
+
+{% highlight nil %}
+1, 6, 21, 107
+{% endhighlight %}
+
+But the Busy Beaver function is **[well-defined](https://nickdrozd.github.io/2020/10/15/busy-beaver-well-defined.html)** for all numbers, so why are there only four values listed? Well, values for the sequence are **not generally computable**, so the values shown there are just the ones that have been **proved**. To say that BB(N) = X is to say that every Turing machine program of N states (and two colors) either halts within X steps or does not halt at all.
+
+For small values of N, it's relatively straightforward to find the longest-running halting program. Such a program establishes a **lower bound** on the value of BB(N). The tricky part is showing that any program that runs longer will never halt. In 1989, Marxen and Buntrock discovered a five-state program that halts in 47176870 steps, and therefore BB(5) ≥ 47176870. But there are twenty or so five-state programs that **have not been proven to halt**, so the fifth value cannot be added to the OEIS entry.
+
+The value of BB(1) is **trivial**, and with a little cleverness and a lot of elbow grease it's possible to determine the value of BB(2) **by hand**. The first substantially difficult value to compute is **BB(3)**. BB(3) ≥ 21, as witnessed by the program `1RB 1RH 1LB 0RC 1LC 1LA`. So proving that the bound of 21 is **tight** means proving that all three-state programs that run for longer than 21 steps will run forever. **At this point the reader should stop and consider how they would go about proving this.**
+
+Did you figure it out? It's okay if you didn't. It's harder than it looks, hard enough for **Shen Lin** to have written his dissertation on the problem in 1963. In 1965 he and **Tibor Rado**, the inventor of the Busy Beaver game, published an article on proving BB(3). (Rado died later that year, and Lin went on to work at **Bell Labs**, where among other people he worked with **[Brian Kernighan](https://nickdrozd.github.io/2020/05/28/kernighan-pronunciation.html)**.) The rest of this post will discuss the **Lin-Rado proof**.
+
+The proof takes this basic outline:
+
+1.  Use **static analysis** to cut the search space from (2 \* 2 \* (3 + 1))<sup>(2 \* 3)</sup> = **16777216** programs down to **46272** programs.
+2.  Run all remaining programs for the conjectured maximum of 21 steps and **discard all the programs that halt**.
+3.  Run all remaining programs through an external program that monitors the tape evolution and detects certain **recurrence patterns**. Discard all programs that exhibit such a pattern, since they will never halt.
+4.  **Verify by hand** that all remaining programs do not halt.
+
+The details of **step 1** are not terribly important (see ["Turing Machine Notation and Normal Form"](https://nickdrozd.github.io/2020/10/04/turing-machine-notation-and-normal-form.html) for a taste), and in fact it isn't strictly required at all. Given enough computational power, it would be feasible to just run straight through all the three-state programs, and indeed this is possible today. But back in the early 60s, **computational resources were scarce**, and this is reflected throughout the Lin-Rado paper. For example, they emphasize that their representation of a program fits into **"a single machine word"**, and the same is true for their representation of the Turing machine tape. (This might strike a "modern" reader as **overkill**, but of course the Busy Beaver problem will quickly outstrip any level of computational power.)
+
+**Step 2** is straightforward. Step 3 is the core of the proof, and we'll get to it shortly. But consider **step 4** for a moment: *Verify by hand that all remaining programs do not halt.* After all the preceding analysis, there are still some **"holdouts"** that have not been proven not to halt. How many of these holdouts would you expect there to be? How many holdouts could reasonably be examined? Suppose there were 10000 holdouts, and Lin and Rado claimed to have personally determined that none of them would halt. Would that claim be **plausible**? I don't think so. If there were that many holdouts, we might say that the problem wasn't really solved yet. **How many is too many?** Keep this question in mind for later.
+
+Okay, back to **step 3**. By this point, we still have tens of thousands of programs to look at, and all of them are believed not to halt. Now, **these three-state programs really aren't all that complex**. It doesn't take much insight to look at one of them and determine that it will never halt. That certainly isn't true for programs of more than four states, but with three states it is. The difficulty is verifying this **"at scale"** for the whole mass of programs. In other words, what is required is **automation of the boring task of three-state program verification**.
+
+Lin and Rado observed that if a machine gets into a **state / scanned symbol combination** it has reached before, and the **local tape conditions** are the same, then the machine will never halt and its program can be discarded. For example, here is the program `1RB 1RH 1LB 0LC 1LA 1RA` run for 30 steps:
+
+{% highlight nil %}
+ 0 A _________[<_>]________
+ 1 B _________<#>[_]_______
+ 2 B _________[<#>]#_______
+ 3 C ________[_]<_>#_______
+ 4 A _______[_]#<_>#_______
+ 5 B _______#[#]<_>#_______
+ 6 C _______[#]_<_>#_______
+ 7 A _______#[_]<_>#_______
+ 8 B _______##[<_>]#_______
+ 9 B _______#[#]<#>#_______
+10 C _______[#]_<#>#_______
+11 A _______#[_]<#>#_______
+12 B _______##[<#>]#_______  <--
+13 C _______#[#]<_>#_______
+14 A _______##[<_>]#_______
+15 B _______##<#>[#]_______
+16 C _______##[<#>]________
+17 A _______##<#>[_]_______
+18 B _______##<#>#[_]______
+19 B _______##<#>[#]#______  <--
+20 C _______##[<#>]_#______
+21 A _______##<#>[_]#______
+22 B _______##<#>#[#]______
+23 C _______##<#>[#]_______
+24 A _______##<#>#[_]______
+25 B _______##<#>##[_]_____
+26 B _______##<#>#[#]#_____  <--
+27 C _______##<#>[#]_#_____
+28 A _______##<#>#[_]#_____
+29 B _______##<#>##[#]_____
+30 C _______##<#>#[#]______
+{% endhighlight %}
+
+(The current scanned square is marked with square brackets, and the initial square is marked with angle brackets.)
+
+Notice that at step 12 the machine is in state `B` and scanning a mark, and the same is true at steps 15 and 19. The machine is in state `B` at step 18, but scanning a blank rather than a mark. At step 12 the machine head is scanning the same square the machine started on, and at step 19 the head is scanning one square to the right of the initial square. Between steps 12 and 19 the machine head does not move more than one square to the left of this initial or more than two to the right of it. The span of tape that it traverses in that time is (at step 12) `#[#]#_`, and the situation is exactly the same at step 19. At step 15, in contrast, the same span of tape looks like `#[#]__`, so the local tape conditions there are different. It turns out that **this program recurs every 7 steps starting from step 12**.
+
+What Lin and Rado did was to implement a **"smart" Turing machine** that runs as normal, except that it halts when it detects a recurrence of this kind. The **recurrence detection algorithm** works like this. As the machine runs, two auxiliary data structures are maintained. The first is the "deviation table", a list that contains for each execution step the position of the machine head relative to the starting square; the second is the "snapshot table", a table indexed by machine state / scanned square pair that contains a list of copies of tape configurations (tape contents, head position, etc) seen at each state / square pair. At every execution step, get the list of past tape configurations for the current state / square pair, then for each of them, get the slice of the deviation table from the step of the previous configuration to the current one, then get the appropriate slices of the previous and current tapes and then check to see if they are the same. Of course, I'm leaving out some critical details by saying "get the appropriate slices". Those details aren't terribly interesting, but they are *very, very easy to screw up*. Lin and Rado spell them out in full, and it took me **two weeks** to implement the whole thing correctly. I might have been better off by trying to understand the "big picture" and then working out the details on my own, so that's how I'll leave it for readers here. I'll also note that Lin and Rado describe the algorithm in **a single long paragraph**, and I've done the same here as a tribute to them.
+
+After **banging my head** against their paper for a while, I was successfully able to implement their "smart" Turing machine. I know it works because I was able to **replicate their results exactly**. Recall step 4 from above: the whole program search space has been pruned through static analysis, and all the programs that halt within 21 steps have been discarded, and all the recurrent programs have been discarded as well, so we are left with some "holdouts" that need to be personally analyzed. The lingering question from earlier was, how many holdouts can there reasonably be? As it happens, there are **exactly forty holdouts**, and Lin and Rado list them explictly (in a cumbersome **octal encoding**). It was quite a thrill when, after many failed runs, my recurrence-detecting Turing machine finally reported back forty holdouts. If there had been forty *different* holdouts I would have been in a real pickle, but fortunately that did not happen.
+
+[**James Harland** has argued](https://arxiv.org/pdf/1610.03184.pdf) that all **code** should be included when reporting on Busy Beaver results so that everything is **reproducible**. In particular, he says (emphasis added):
+
+> Lin and Rado provide the earliest systematic analyses of the 3-state 2-symbol case, which involved using a program which was able to analyse all but 40 machines, which were then analysed by hand. They provide a description of their method and a specification of the 40 machines, **but the details provided are not sufficient to reproduce exactly what was done, and the code used does not seem to be available**.
+
+I don't wish to dispute his general point that claimed Busy Beaver results can be hard to verify. But in this particular case, **the details provided were indeed sufficient to reproduce exactly what was done**. In fact, it's a good thing that actual code was not included. In what language was their code written? **Old Fortran**, maybe? Or even worse, some kind of obsolete **machine code**? Fully-implemented, working programs do not age well. Languages change, styles change, techniques change, and code gets left behind. I doubt that having full access to the actual code they used would have been of much use to me. On the other hand, **a natural-language *description* of a program is timeless**. They described their program, and based on that description I was able to come up with **[my own program](https://github.com/nickdrozd/pytur/blob/f5588e194b157b8f45d4fed466f479a0c0d011c9/turing.py#L120)** to do the same thing.
+
+In many circumstances, the right attitude is: ***code talks and bullshit walks***. But imagine if **[Euclid's algorithm](https://en.wikipedia.org/wiki/Euclidean_algorithm)** had been communicated in actual code rather than natural language. Would it have been any easier for readers to understand over the ages? I doubt it; the result might have come out looking more like [Linear A](https://en.wikipedia.org/wiki/Linear_A). I think the situation here is similar, in that the underlying data structures (Turing machine programs, tapes, etc) are abstractly simple and generally well-understood, and so the implementation details that would be handled explicitly by code are not so interesting.
+
+Note that the Lin-Rado proof is **not formally verified**. It could be made formal (that is, implemented in a prover like **Coq**), but as far as I know this has never been done. On the other hand, it is a **computer-assisted proof**, since a computer program is used to verify that some Turing machine programs will never halt. A famous (or infamous) example of a computer-assisted proof is the 1976 proof of the **four-color theorem** by Appel and Haken. That proof had the same basic outline as the Lin-Rado proof: use normal math to reduce a large problem space to a definite list of cases, then use a computer to verify those cases. [A lot of **fuss** was made back then about whether or in what sense the result was really a "theorem"](http://www.thatmarcusfamily.org/philosophy/Course_Websites/Math_S08/Readings/tymoczko.pdf), since it relied on ***appeal-to-computer*** as a novel means of proof.
+
+I have my thoughts about all that, but I don't want to get into it. I would, however, like to point out that the Appel-Haken proof was published in 1976, and the Lin-Rado proof was published in 1965. **Was the Lin-Rado proof the first computer-assisted proof? Why wasn't it ever discussed in the debates around the four-color theorem?** One important difference between the four-color theorem and the BB(3) theorem is that the four-color conjecture was a "normal" mathematical question that happened to be proved with the help of computers. The Busy Beaver problem, in contrast, is manifestly a question about computers, and therefore nobody was surprised or upset that it was answered with the help of computers. That's an important difference, but I think the real issue is that **nobody involved knew about the Lin-Rado proof**. Someday a **history of computer-assisted proofs** will be written, and the Lin-Rado proof ought to be included.
+
+
+# Exercises
+
+1.  **Implement the recurrence detection mechanism.**
+2.  **Formally verify the Lin-Rado proof.**
+3.  **Determine the time / space complexity of the Lin-Rado algorithm.**
