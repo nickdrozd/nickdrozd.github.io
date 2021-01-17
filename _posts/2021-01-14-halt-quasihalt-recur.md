@@ -362,6 +362,8 @@ A few **trends** stick out from this data. First, *BBB(2, 2) = BB(2, 2) = 6*, so
 1.  Find better values for BBB(4, 2) and BBLR(4, 2), or else prove that the known lower bounds are optimal.
 2.  Devise new termination conditions (either weaker or stronger than the conditions described here) and find champions for their corresponding Busy Beaver-like sequences.
 3.  The **Lin-Rado algorithm** detects LR-recurrence, but it doesn't do so until after the machine as finished its first recurrence. Devise an algorithm to detect recurrence at the time that it starts.
+4.  Prove that BBLR dominates BB.
+5.  Find a quasihalting program that is *not* LR-recurrent.
 
 # Footnotes
 
