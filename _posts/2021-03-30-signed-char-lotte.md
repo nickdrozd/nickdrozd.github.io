@@ -55,7 +55,7 @@ dear; (char)lotte--;
 
 	'I'  -  (long)  - 4 - 'U' ])- !!
 
-p	(time  =out=  'a'));} while( my - dear
+	(time  =out=  'a'));} while( my - dear
 
 	&& 'I'-1l  -get-  'a'); break;}}
 
