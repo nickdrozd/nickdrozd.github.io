@@ -24,13 +24,13 @@ triangular(2) = 1 + 2 = 3
 ,*
 ,* *
 ,* * *
-trianngular(3) = 1 + 2 + 3 = 6
+triangular(3) = 1 + 2 + 3 = 6
 
 ,*
 ,* *
 ,* * *
 ,* * * *
-trianngular(4) = 1 + 2 + 3 + 4 = 10
+triangular(4) = 1 + 2 + 3 + 4 = 10
 #+END_EXAMPLE
 
 This sequence has an easy recursive characterization:
