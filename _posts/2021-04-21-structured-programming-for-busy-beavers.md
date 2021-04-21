@@ -415,12 +415,12 @@ while (1) {
 
 3.  Examine the **control flow graph** for the 4-state 2-color Blanking Beaver champion and correlate its features with the code above:
 
-    ![img](/assets/2021-04-21-structured-programming-for-busy-beavers/blb-4-2.png)
+![img](/assets/2021-04-21-structured-programming-for-busy-beavers/blb-4-2.png)
 
 4.  The 4-state 2-color **[Recurrent Beaver](https://nickdrozd.github.io/2021/02/24/lin-recurrence-and-lins-algorithm.html)** champion runs for **158491 steps** before entering into Lin recurrence with a period of 17620 steps. Use its control flow graph to predict the structure of its code:
 
-    ![img](/assets/2021-04-21-structured-programming-for-busy-beavers/bblr-4-2.png)
+![img](/assets/2021-04-21-structured-programming-for-busy-beavers/bblr-4-2.png)
 
 5.  The 4-state 2-color **[Periodic Beaver](https://nickdrozd.github.io/2021/02/24/lin-recurrence-and-lins-algorithm.html)** champion runs for 7170 steps before entering into Lin recurrence with a period of **29117 steps**. Use its control flow graph to predict the structure of its code:
 
-    ![img](/assets/2021-04-21-structured-programming-for-busy-beavers/bbp-4-2.png)
+![img](/assets/2021-04-21-structured-programming-for-busy-beavers/bbp-4-2.png)
