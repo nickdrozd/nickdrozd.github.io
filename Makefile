@@ -7,3 +7,6 @@ blog :
 
 drafts :
 	bundle exec jekyll server --drafts
+
+update :
+	bundle update jekyll
