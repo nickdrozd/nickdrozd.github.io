@@ -1,0 +1,231 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: Binary Relations in Idris
+#+date: <2021-11-17 Wed>
+#+author: Nick Drozd
+#+email: nicholasdrozd@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 29.0.50 (Org mode 9.5)
+#+cite_export:
+#+jekyll_layout: post
+#+jekyll_categories:
+#+jekyll_tags:
+
+Every *natural number* is either zero or the successor of some number. In *Idris* this is expressed as a *type*:
+
+#+begin_src haskell
+data Nat = Z | S Nat
+#+end_src
+
+Given two numbers /m/ and /n/, */m ≤ n/* (that is, /m/ is less than or equal to /n/) either when /m/ is zero or when /m/ is the successor of /j/ and /n/ is the successor of /k/ and /j ≤ k/. This is again expressed in Idris as a type:
+
+#+begin_src haskell
+data LTE  : (m, n : Nat) -> Type where
+  LTEZero : LTE Z n
+  LTESucc : LTE j k -> LTE (S j) (S k)
+#+end_src
+
+≤ is the classic example of a *binary relation*. In type theory a binary relation is a function of type =ty -> ty -> Type=. This is not to be confused with *binary operation*, which is a function of type =ty -> ty -> ty=. Binary operations produce instances of some type, but binary relations produce things that are themselves types. In spirit a binary relation is similar to a function of type =ty -> ty -> Bool=; it is a *proposition* that "says" something that may or may not be true.
+
+Certain common properties are used to classify binary relations and describe their behavior. For example, ≤ is *reflexive*: /x ≤ x/ for all /x/. It is also *transitive* and *antisymmetric*: if /x ≤ y/ and /y ≤ z/ then /x ≤ z/; and /x ≤ y/ and /y ≤ x/ only when /x = y/.
+
+In idris these properties are expressed with *interfaces*:
+
+#+begin_src haskell
+interface Reflexive ty rel where
+  reflexive : {x : ty} -> rel x x
+
+interface Transitive ty rel where
+  transitive : {x, y, z : ty} -> rel x y -> rel y z -> rel x z
+
+interface Antisymmetric ty rel where
+  antisymmetric : {x, y : ty} -> rel x y -> rel y x -> x = y
+#+end_src
+
+Implementing these interfaces for a relation over some type *verifies* that the relation bears those properties. Sometimes this is difficult, and sometimes it's easy:
+
+#+begin_src haskell
+Reflexive Nat LTE where
+  reflexive {x = Z} = LTEZero
+  reflexive {x = S k} = LTESucc $ reflexive {x = k}
+
+Transitive Nat LTE where
+  transitive LTEZero _ = LTEZero
+  transitive (LTESucc xy) (LTESucc yz) =
+    LTESucc $ transitive {rel = LTE} xy yz
+
+Antisymmetric Nat LTE where
+  antisymmetric LTEZero LTEZero = Refl
+  antisymmetric (LTESucc xy) (LTESucc yx) =
+    cong S $ antisymmetric xy yx
+#+end_src
+
+A *preorder* is a relation that is both reflexive and transitive, and a *partial order* is a preorder that is antisymmetric:
+
+#+begin_src haskell
+interface (Reflexive ty rel, Transitive ty rel) => Preorder ty rel where
+
+interface (Preorder ty rel, Antisymmetric ty rel) => PartialOrder ty rel where
+#+end_src
+
+These order properties are *empty* -- just definitions that *bundle together other properties*. Consequently they are easy to implement:
+
+#+begin_src haskell
+Preorder Nat LTE where
+
+PartialOrder Nat LTE where
+#+end_src
+
+A slightly more complicated property is /connexity/. A relation is *connex* over a type if any two distinct instances of the type are related one way or another, and a *linear order* is a connex partial order:
+
+#+begin_src haskell
+interface Connex ty rel where
+  connex : {x, y : ty} -> Not (x = y) -> Either (rel x y) (rel y x)
+
+interface (PartialOrder ty rel, Connex ty rel) => LinearOrder ty rel where
+#+end_src
+
+≤ is connex over the naturals, but this is *trickier to prove* than the other properties:
+
+#+begin_src haskell
+Connex Nat LTE where
+  connex {x = Z} _ = Left LTEZero
+  connex {y = Z} _ = Right LTEZero
+  connex {x = S _} {y = S _} prf =
+    case connex {rel = LTE} $ prf . (cong S) of
+      Left jk => Left $ LTESucc jk
+      Right kj => Right $ LTESucc kj
+
+LinearOrder Nat LTE where
+#+end_src
+
+≤ is antisymmetric: /x ≤ y/ implies /y ≤ x/ only when /y = x/. A relation is *symmetric* when it goes both ways unconditionally:
+
+#+begin_src haskell
+interface Symmetric ty rel where
+  symmetric : {x, y : ty} -> rel x y -> rel y x
+#+end_src
+
+A simple example of a symmetric relation is the relation of *being-within-one-of*:
+
+#+begin_src haskell
+WithinOneOf : (a, b : Nat) -> Type
+WithinOneOf a b = Either (a = b) $ Either (a = S b) (b = S a)
+#+end_src
+
+If /x/ is within one of /y/, then /y/ is within one of /x/. Further, /x/ is within one of /x/ for all /x/:
+
+#+begin_src haskell
+Reflexive Nat WithinOneOf where
+  reflexive = Left Refl
+
+Symmetric Nat WithinOneOf where
+  symmetric (Left x_eq_y) = Left $ sym x_eq_y
+  symmetric (Right $  Left prf) = Right $ Right prf
+  symmetric (Right $ Right prf) = Right $  Left prf
+#+end_src
+
+A relation that is both reflexive and symmetric is a *tolerance relation*:
+
+#+begin_src haskell
+interface (Reflexive ty rel, Symmetric ty rel) => Tolerance ty rel where
+
+Tolerance Nat WithinOneOf where
+#+end_src
+
+The within-one-of relation is not transitive. 2 is within one of 3 and 4 is within one of 3, but 2 is not within one of 4. A tolerance relation that is transitive is an *equivalence relation*. This could also be defined as a symmetric preorder. Or even better, forget about the *hierarchy* altogether and define an equivalence relation directly as a bundle of reflexive, transitive, and symmetric:
+
+#+begin_src haskell
+interface (Reflexive ty rel, Transitive ty rel, Symmetric ty rel) => Equivalence ty rel where
+
+Equivalence ty rel => Preorder ty rel where
+
+Equivalence ty rel => Tolerance ty rel where
+#+end_src
+
+Let /p/ be a *factor* of /q/ and let /q/ be factor of /r/. Is /p/ a factor of /r/? Yes, and therefore the is-a-factor-of relation is transitive. It's also reflexive and antisymmetric, and so the relation is another example of a partial order. All of these claims can be proved in Idris, although it *takes some work*:
+
+#+begin_src haskell
+data Factor : Nat -> Nat -> Type where
+    CofactorExists : {p, n : Nat} -> (q : Nat) -> n = p * q -> Factor p n
+
+Reflexive Nat Factor where
+  reflexive = CofactorExists 1 $ rewrite multOneRightNeutral x in Refl
+
+Transitive Nat Factor where
+  transitive (CofactorExists qb prfAB) (CofactorExists qc prfBC) =
+    CofactorExists (qb * qc) $
+        rewrite prfBC in
+        rewrite prfAB in
+        rewrite multAssociative x qb qc in
+        Refl
+
+Preorder Nat Factor where
+
+-- Proofs elided because they are boring and complicated...
+multOneSoleNeutral : (a, b : Nat) -> S a = S a * b -> b = 1
+oneSoleFactorOfOne : (a : Nat) -> Factor a 1 -> a = 1
+
+Antisymmetric Nat Factor where
+  antisymmetric {x = Z} (CofactorExists _ prfAB) _ = sym prfAB
+  antisymmetric {y = Z} _ (CofactorExists _ prfBA) = prfBA
+  antisymmetric {x = S a} {y = S _} (CofactorExists qa prfAB) (CofactorExists qb prfBA) =
+      let qIs1 = multOneSoleNeutral a (qa * qb) $
+              rewrite multAssociative (S a) qa qb in
+              rewrite sym prfAB in
+              prfBA
+      in
+      rewrite prfAB in
+      rewrite oneSoleFactorOfOne qa . CofactorExists qb $ sym qIs1 in
+      rewrite multOneRightNeutral a in
+      Refl
+
+PartialOrder Nat Factor where
+#+end_src
+
+Reflexivity, transitivity, and symmetry are the most prominent properties of binary relations. A lesser-known property is /density/: a relation is *dense* if between any two related elements there is a third related element:
+
+#+begin_src haskell
+interface Dense ty rel where
+  dense : {x, y : ty} -> rel x y -> (z : ty ** (rel x z, rel z y))
+#+end_src
+
+*Every reflexive relation is dense*: if /x/ is related to /y/, then by reflexivity /x/ is related to /x/, and so /x/ itself serves as the intercalated element:
+
+#+begin_src haskell
+Reflexive ty rel => Dense ty rel where
+  dense {x} xy = (x ** (reflexive {x}, xy))
+#+end_src
+
+So ≤ is technically dense, but that doesn't mean much. The strictly-less-than relation *<* is not dense over the natural numbers: /3 < 4/, but there is no /x/ such that /3 < x/ and /x < 4/. But it is dense over the *rational numbers*: if /a/b < c/d/, then /a+c/b+d/ comes between them.
+
+A relation such that /x/ being related to /y/ and also to /z/ implies that /y/ is related to /z/ is called *Euclidean*:
+
+#+begin_src haskell
+interface Euclidean ty rel where
+  euclidean : {x, y, z : ty} -> rel x y -> rel x z -> rel y z
+#+end_src
+
+Euclideanness is commonly listed as a property of relations, but *examples are hard to come by*. The [[https://en.wikipedia.org/wiki/Euclidean_relation][Wikipedia page for Euclidean relations]] doesn't list any! Still, a few general properties can be proved. If a Euclidean relation is reflexive, it is also symmetric; and if it is reflexive, it is also transitive. Finally, a relation that is both transitive and symmetric is Euclidean:
+
+#+begin_src haskell
+[RES] (Reflexive ty rel, Euclidean ty rel) => Symmetric ty rel where
+  symmetric {x} xy =
+    euclidean {x} xy $ reflexive {x}
+
+[RET] (Reflexive ty rel, Euclidean ty rel) =>
+      Transitive ty rel using RES where
+  transitive {rel} xy yz =
+    symmetric {rel} $ euclidean {rel} yz $ symmetric {rel} xy
+
+[TSE] (Transitive ty rel, Symmetric ty rel) => Euclidean ty rel where
+  euclidean {rel} xy xz =
+    transitive {rel} (symmetric {rel} xy) xz
+#+end_src
+
+As of *v0.5*, all of these relations and more are included in the *[[https://github.com/idris-lang/Idris2/blob/main/libs/base/Control/Relation.idr][Idris 2 standard library]]*. I authored the current design. Earlier version of Idris used a different relation module with fewer relations and an inflexible hierarchy of order relations.
