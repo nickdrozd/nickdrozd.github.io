@@ -144,7 +144,7 @@ And the tape looks like this:
                  ^
 {% endhighlight %}
 
-Once again, we leave the mark alone, move right, and transfer to the next label.
+Once again, we leave the mark alone, move left, and transfer to the next label.
 
 {% highlight c %}
 main() {
@@ -159,7 +159,7 @@ main() {
   else
     {
       // Found the second mark; keep going.
-      RIGHT;
+      LEFT;
       goto COUNT_THIRD_MARK;
     }
 
@@ -218,7 +218,7 @@ The current cell is two to the left of the initial square. Three marks have been
               ^
 {% endhighlight %}
 
-This proces will go through a few more iterations, each time moving three marks further into the initial block and two spaces further to the right of the starting square. **This is how *3k* is transformed into *5k*.**
+This process will go through a few more iterations, each time moving three marks further into the initial block and two spaces further to the right of the starting square. **This is how *3k* is transformed into *5k*.**
 
 Here is the program so far:
 
@@ -247,7 +247,7 @@ main() {
   else
     {
       // Found the second mark; keep going.
-      RIGHT;
+      LEFT;
       goto COUNT_THIRD_MARK;
     }
 
@@ -304,7 +304,7 @@ main() {
   else
     {
       // Found the second mark; keep going.
-      RIGHT;
+      LEFT;
       goto COUNT_THIRD_MARK;
     }
 
@@ -363,7 +363,7 @@ main() {
   else
     {
       // Found the second mark; keep going.
-      RIGHT;
+      LEFT;
       goto COUNT_THIRD_MARK;
     }
 
