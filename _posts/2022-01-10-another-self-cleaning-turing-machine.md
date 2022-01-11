@@ -34,7 +34,7 @@ The classic Busy Beaver problem, first posed in 1962, asks for the longest that 
 
 Notice that BB(4, 2) is the last **"reasonable"** value; after that the values **"lift off"**, and BB(2, 4) and BB(5, 2) are significantly greater. (Actually, the reasonable values have all been **proved**, but the lift-off values have not. The 5-2 champion program was discovered in 1989 (by [Marxen and Buntrock](http://turbotm.de/~heiner/BB/mabu90.html)) and the 2-4 champion program was discovered in 2005 (by [Ligocki and Ligocki](https://github.com/sligocki/busy-beaver)). It's been a while, to be sure, and nobody (incuding me) has been able to find a program that does any better, but they still haven't been proved.)
 
-In July 2021 I discovered a 4-state 2-color program that reaches the blank tape in **[32,779,477 steps](https://nickdrozd.github.io/2021/07/11/self-cleaning-turing-machine.html)**. At that point, the table of vales looked this this (where BB is Busy Beaver and BLB is Blanking Beaver):
+In July 2021 I discovered a 4-state 2-color program that reaches the blank tape in **[32,779,477 steps](https://nickdrozd.github.io/2021/07/11/self-cleaning-turing-machine.html)**. At that point, the table of values looked like this (where BB is Busy Beaver and BLB is Blanking Beaver):
 
 |---|---|---|---|
 | States | Colors | BB | BLB |
@@ -69,7 +69,7 @@ Here's another reason. Consider the 2-state 4-color halting champion:
 1RB 2LA 1RA 1RA  1LB 1LA 3RB 1RH
 {% endhighlight %}
 
-A striking property of this program is that it is ***blank-free***. It always marks and never erases. But a self-cleaning program obviously has to erase at some point, or else the tape couldn't get wiped. It could be that the extra instrucion afforded by not needing to halt is not enough to make up for the burden of having to erase.
+A striking property of this program is that it is ***blank-free***. It always marks and never erases. But a self-cleaning program obviously has to erase at some point, or else the tape couldn't get wiped. It could be that the extra instrucion afforded by not needing to halt is not enough to make up for the burden of having to erase. (Really, this is a simple and concrete example of what Smith was talking about.)
 
 I thought that might be the case. But then I thought: *no, that's just the rationalization of someone who has failed to find what they sought.* I was impelled forward by **an unshakable feeling that the true champion remained at large**.
 
