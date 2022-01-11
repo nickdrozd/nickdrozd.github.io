@@ -1,0 +1,131 @@
+---
+title: "Another New Record in Self-Cleaning Turing Machines"
+date: <span class="timestamp-wrapper"><span class="timestamp">&lt;2022-01-10 Mon&gt;</span></span>
+layout: post
+categories:
+tags:
+---
+**How long can a Turing machine program run when started on the blank tape before the tape becomes blank again?** Of course, this will depend on the length of the program &#x2013; how many *states* and *colors* it has. Even given these parameters, it is **logically impossible to calculate** how long a self-cleaning Turing machine can run. Any values that can be known have to be **discovered empirically**.
+
+And I discovered a good one. Consider the following **2-state 4-color** program:
+
+{% highlight nil %}
+1RB 2RA 1RA 2RB  2LB 3LA 0RB 0RA
+{% endhighlight %}
+
+When started on the blank tape, this program runs for **1,367,361,263,049 steps** before wiping the tape clean. That's *1.3 trillion*, which seems like a lot for program that can be described with just 32 bits.
+
+The question of how long a self-cleaning Turing machine can run is known as the **[Blanking Beaver](https://nickdrozd.github.io/2021/02/14/blanking-beavers.html)** problem, and it is closely related to the more well-known **[Busy Beaver](https://www.scottaaronson.com/papers/bb.pdf)** problem.
+
+![img](/assets/2022-01-10-another-self-cleaning-turing-machine/sinister-math.png)
+
+The classic Busy Beaver problem, first posed in 1962, asks for the longest that an *n*-state *k*-color TM prgoram can run when started on the blank tape before executing a **[halt instruction](https://nickdrozd.github.io/2021/01/14/halt-quasihalt-recur.html)**. Here are the best known values for short pograms:
+
+|---|---|---|
+| States | Colors | Busy Beaver |
+|---|---|---|
+| 2 | 2 | 6 |
+| 3 | 2 | 21 |
+| 2 | 3 | 38 |
+| 4 | 2 | 107 |
+| 2 | 4 | 3,932,964 |
+| 5 | 2 | 47,176,870 |
+|---|---|---|
+
+Notice that BB(4, 2) is the last **"reasonable"** value; after that the values **"lift off"**, and BB(2, 4) and BB(5, 2) are significantly greater. (Actually, the reasonable values have all been **proved**, but the lift-off values have not. The 5-2 champion program was discovered in 1989 (by [Marxen and Buntrock](http://turbotm.de/~heiner/BB/mabu90.html)) and the 2-4 champion program was discovered in 2005 (by [Ligocki and Ligocki](https://github.com/sligocki/busy-beaver)). It's been a while, to be sure, and nobody (incuding me) has been able to find a program that does any better, but they still haven't been proved.)
+
+In July 2021 I discovered a 4-state 2-color program that reaches the blank tape in **[32,779,477 steps](https://nickdrozd.github.io/2021/07/11/self-cleaning-turing-machine.html)**. At that point, the table of vales looked this this (where BB is Busy Beaver and BLB is Blanking Beaver):
+
+|---|---|---|---|
+| States | Colors | BB | BLB |
+|---|---|---|---|
+| 2 | 2 | 6 | 8 |
+| 3 | 2 | 21 | 32 |
+| 2 | 3 | 38 | 77 |
+| 4 | 2 | 107 | 32,779,477 |
+| 2 | 4 | 3,932,964 | ??? |
+| 5 | 2 | 47,176,870 | |
+|---|---|---|---|
+
+There's a huge gap between BB(4, 2) and BB(5, 2), but BLB(4, 2) just about closes the gap; BB(5, 2) is not even half again as much. This led me to the **working hypothesis** that *BLB(2, 4) should be much greater than BB(2, 4)*.
+
+And so I sat down at my workstation to search for a new champion.
+
+![img](/assets/2022-01-10-another-self-cleaning-turing-machine/workstation.png)
+
+A word about **Turing machine simulators**. I found the BLB(4, 2) champion program using a simulator written in **[C](https://github.com/nickdrozd/busy-beaver-stuff/tree/main/machines)**. It has a [pretty clever design](https://nickdrozd.github.io/2020/09/14/programmable-turing-machine.html), and it's blazing fast. But still, it is a ***naive*** simulator: the simulator executes one step for every step in the program under simulation. What's more, it uses **static tape allocation**: For as many steps as the simulator will be run, that many tape cells are laid out in both directions. This obviates the need for any bounds checking, but it also means that in practice the simulator is limited to run for no more than about **268 million** steps.
+
+So after generating a list of 2-state 4-color programs using **Brady's algorithm**, I ran them for 268 million steps. The best program I found reached the blank tape in 190,524 steps &#x2013; way less than the halting champion!
+
+For months I was stuck there, unsure of how to proceed, unsure even of **whether** to proceed. My working hypothesis was that BLB(2, 4) > BB(2, 4), but that isn't a proof. [Bruce Smith](https://scottaaronson.blog/?p=5661#comment-1900309) pointed out that **there isn't even a general proof that BLB grows at least as fast as BB**.
+
+He offered an argument as to why we might have BB(n, k) > BLB(n, k) for some values:
+
+> I can even imagine an intuitive explanation for the hypothesis that for most n, BLB(n) < BB(n)! Namely, BB(n) can only worry about running a long time, not about making its ending tape easy to erase. And if it ends up inside a “pseudorandom” sequence on tape, and not extremely near either end, there is no few-state way to erase the tape from that point (like there would be if it was entirely outside the written part, with just one extra state to write 0s forever in one direction). The overhead of making that possible means fewer states are left for the “initial BB-like part”, or (alternative description of same thing?) that only some BB-like algorithms permit easy tape erasure. The single extra instruction (replacing the explicit Halt required for BB) might not always make up for this (though for tiny n it evidently does).
+
+Here's another reason. Consider the 2-state 4-color halting champion:
+
+{% highlight nil %}
+1RB 2LA 1RA 1RA  1LB 1LA 3RB 1RH
+{% endhighlight %}
+
+A striking property of this program is that it is ***blank-free***. It always marks and never erases. But a self-cleaning program obviously has to erase at some point, or else the tape couldn't get wiped. It could be that the extra instrucion afforded by not needing to halt is not enough to make up for the burden of having to erase.
+
+I thought that might be the case. But then I thought: *no, that's just the rationalization of someone who has failed to find what they sought.* I was impelled forward by **an unshakable feeling that the true champion remained at large**.
+
+If you know that something exists, searching for it is not so bad. If you haven't found it, that just means you haven't looked hard enough or you haven't looked smart enough. But searching for something that *might not exist* can get **disheartening**. If you haven't found it, it could be a problem with your search, or it could be that there's nothing to be found at all. There are days when you think: **What am I even doing? Am I wasting my time? How long will this go on?**
+
+![img](/assets/2022-01-10-another-self-cleaning-turing-machine/denim-joint.png)
+
+I drew some hope from the idea that BB and BLB maintain some kind of **ratio**. What if BLB(2, 4) bore the same relation to BLB(4, 2) as BB(2, 4) to BB(4, 2)? That is:
+
+{% highlight nil %}
+BLB(2, 4) / BLB(4, 2) = BB(2, 4) / BB(4, 2)
+{% endhighlight %}
+
+If this were true, then BLB(2, 4) woud be about about 1.2 trillion. Well, that's almost exactly what the value of BLB(2, 4) actually turned out to be! I don't know if it's a coincidence or what, but that ratio turned out to have **predictive power**, and in any case it kept me going.
+
+A trillion steps is a lot though, so despite my great fondness for it, I eventually abandoned my C simulator in favor of one written in **[Idris](https://github.com/nickdrozd/busy-beaver-stuff/tree/main/idris)**. This simulator is based on **[an elegant model for the Turing machine tape](https://nickdrozd.github.io/2021/12/31/turing-machine-tape.html)** and implements standard **Turing machine acceleration** techniques, including **color blocks** and **state-skipping**. (*More on those techniques later.*) This allowed me to run the programs for much longer, and on the evening of [Saturday 8 Jan 2022](https://github.com/nickdrozd/busy-beaver-stuff/commit/f9593428d5389ed159ba35302c3a9b5f10bd069a) this new champion turned up.
+
+![img](/assets/2022-01-10-another-self-cleaning-turing-machine/water.png)
+
+What about the program itself? Shawn Ligocki looked at it and determined that it implements some kind of **[Collatz-like function](https://www.sligocki.com/2021/07/17/bb-collatz.html)**. Collatz-like functions seem to be a good strategy for the Busy Beaver game and its variations; most known champions do it, [including the 4-state 2-color BLB champion](https://nickdrozd.github.io/2021/10/31/busy-beaver-derived.html). Also, despite running for over a trillion steps, the program can be executed by my Idris simulator in well under one second. This means that the steps occur in a regular and predictable fashion, and that means Collatz.
+
+Based on a superficial reading, I don't think this new champion program qualifies as **[spaghetti code](https://nickdrozd.github.io/2021/01/26/spaghetti-code-conjecture.html)**. Here it is again:
+
+|---|---|---|---|---|
+| | 0 | 1 | 2 | 3 |
+|---|---|---|---|---|
+| A | `1RB` | `2RA` | `1RA` | `2RB` |
+| B | `2LB` | `3LA` | `0RB` | `0RA` |
+|---|---|---|---|---|
+
+A few details stand out to me:
+
+1.  State `A` always moves right.
+2.  Scanning a `0` always leads to state `B`.
+3.  Scanning a `1` always leads to state `A`.
+4.  Scanning a `2` or `3` flips the state (`A` to `B` or `B` to `A`).
+5.  Only state `B` erases.
+6.  State `A` only prints `1` and `2`.
+7.  State `B` doesn't print `1`.
+8.  When a blank is printed, the next move is right.
+
+A more detailed analysis would be better, of course, but this is preliminary evidence that it isn't spaghetti, and therefore also further evidence that **[the Spaghetti Code Conjecture might be false](https://nickdrozd.github.io/2021/09/25/spaghetti-code-conjecture-false.html)**.
+
+Finally, here is the updated table of values:
+
+|---|---|---|---|
+| States | Colors | BB | BLB |
+|---|---|---|---|
+| 2 | 2 | 6 | 8 |
+| 3 | 2 | 21 | 32 |
+| 2 | 3 | 38 | 77 |
+| 4 | 2 | 107 | 32,779,477 |
+| 2 | 4 | 3,932,964 | 1,367,361,263,049 |
+| 5 | 2 | 47,176,870 | **???** |
+|---|---|---|---|
+
+What is the true value of BLB(5, 2)? Finding a 5-state 2-color program that reaches the blank tape after BB(5, 2) steps is an **OPEN PROBLEM**. I don't think that's an unreasonable goal. Certainly BLB(5, 2) > 1,367,361,263,049, so the true value won't be easy to obtain. Let me know if you find it, because **I'm done with searching for a while**.
+
+![img](/assets/2022-01-10-another-self-cleaning-turing-machine/office.png)
