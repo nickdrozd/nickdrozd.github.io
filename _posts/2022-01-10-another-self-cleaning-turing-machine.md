@@ -40,7 +40,7 @@ In July 2021 I discovered a 4-state 2-color program that reaches the blank tape 
 | States | Colors | BB | BLB |
 |---|---|---|---|
 | 2 | 2 | 6 | 8 |
-| 3 | 2 | 21 | 32 |
+| 3 | 2 | 21 | 34 |
 | 2 | 3 | 38 | 77 |
 | 4 | 2 | 107 | 32,779,477 |
 | 2 | 4 | 3,932,964 | ??? |
@@ -105,11 +105,12 @@ A few details stand out to me:
 1.  State `A` always moves right.
 2.  Scanning a `0` always leads to state `B`.
 3.  Scanning a `1` always leads to state `A`.
-4.  Scanning a `2` or `3` flips the state (`A` to `B` or `B` to `A`).
-5.  Only state `B` erases.
-6.  State `A` only prints `1` and `2`.
-7.  State `B` doesn't print `1`.
-8.  When a blank is printed, the next move is right.
+4.  Scanning a `2` maintains the current state.
+5.  Scanning a `3` flips the current state (`A` to `B` and `B` to `A`).
+6.  Only state `B` erases.
+7.  State `A` only prints `1` and `2`.
+8.  State `B` doesn't print `1`.
+9.  When a blank is printed, the next move is right.
 
 A more detailed analysis would be better, of course, but this is preliminary evidence that it isn't spaghetti, and therefore also further evidence that **[the Spaghetti Code Conjecture might be false](https://nickdrozd.github.io/2021/09/25/spaghetti-code-conjecture-false.html)**.
 
@@ -119,7 +120,7 @@ Finally, here is the updated table of values:
 | States | Colors | BB | BLB |
 |---|---|---|---|
 | 2 | 2 | 6 | 8 |
-| 3 | 2 | 21 | 32 |
+| 3 | 2 | 21 | 34 |
 | 2 | 3 | 38 | 77 |
 | 4 | 2 | 107 | 32,779,477 |
 | 2 | 4 | 3,932,964 | 1,367,361,263,049 |
