@@ -1,0 +1,99 @@
+---
+title: "Brady's Algorithm for Program Generation"
+date: <span class="timestamp-wrapper"><span class="timestamp">&lt;2022-01-14 Fri&gt;</span></span>
+layout: post
+categories:
+tags:
+---
+The aim of the **[Busy Beaver game](https://www.scottaaronson.com/papers/bb.pdf)** is to find the [longest running](https://nickdrozd.github.io/2021/01/14/halt-quasihalt-recur.html) Turing machine program of *n* states and *k* colors. Busy Beaver programs could in principle be [written by hand](https://nickdrozd.github.io/2021/10/31/busy-beaver-derived.html), but nobody has ever succeeded in doing so. Instead, these programs are **discovered** through **exhaustive search**. This is done by a two-stage process:
+
+1.  Generate a list of candidate programs.
+2.  Run them all.
+
+Stage two raises an obvious question: run them for how long? It would be great to run them all for infinitely many steps, but that's nonsense. Only finitely many steps can be executed. So how many? What we're looking for is a natural number *S* and an *nk*-program *P* such that *P* halts after *S* steps. But there's no way to **upper-bound** *S* in terms of *n* and *k*; for if there were, it could be used to solve the **halting problem**, and that's impossible. The only way to deal with this is to pick a step limit *T* and run everything for that many steps. There isn't any principled way to decide on a good *T*; in practice it's determined by 1) how powerful my [hardware](https://nickdrozd.github.io/2021/12/08/busy-beaver-hardware.html) is, 2) how long I'm willing to wait, and 3) my out-of-thin-air estimate on the upper bound of *S*. The history of Busy Beaver research is littered with estimates of *S* that turned out to be **comically wrong**. I've even made a few stupid estimates myself!
+
+The first stage, **program generation**, is a little more nuanced. The difficulties here are not **uncomputable**; instead, they are "just" **infeasible**. It's easy to write code to **enumerate** every *n*-state *k*-color program, but the number of *nk*-programs grows multiple-exponentially: there are ***O(nk<sup>nk</sup>)*** of them. This is because an *nk*-program has one instruction per state per color, and there are *2nk* possible instructions. This gets out of hand quickly.
+
+**Normalization** helps a little. Because the Busy Beaver game always started on the blank tape, we can assume (why?) that the first instruction of every program is `1RB`. This knocks the exponent down by one, to *O(nk<sup>(nk-1)</sup>)*.
+
+The **halt instruction** also helps. In the classic Busy Beaver game program are required to execute a halt instruction, so every candidate program must have at least one. Its exact location in the program might differ, introducing a multiplicative constant, but the exponent is still reduced to *O(nk<sup>(nk - 2)</sup>)*. However, this only works for classic Busy Beaver. For variants like [Blanking Beaver](https://nickdrozd.github.io/2021/02/14/blanking-beavers.html) or [Beeping Busy Beaver](https://nickdrozd.github.io/2020/08/13/beeping-busy-beavers.html) this optimization is not available. I regard this as evidence that **these sequences are more powerful**.
+
+Straightforward enumeration tends to produce a lot of **junk programs**, or programs that are obviously not of any interest. One problem is that an enumerated program will be filled in all the way, even it has instructions that may not be reachable starting from the blank tape. Another problem is that **isomorphic duplicates** are generated: programs that are equivalent through permutation of states or colors. Remember that all these programs will be passed on to stage two where they will be run for a long time. Trying to muscle through a long list of junk to find something good is wasteful, if indeed it's feasible at all.
+
+The solution to this is **Brady's algorithm**, also known as the **tree generation method**. Devised by **[Allen Brady](https://nickdrozd.github.io/2021/12/08/busy-beaver-hardware.html)** in **[1964](https://ir.library.oregonstate.edu/concern/graduate_thesis_or_dissertations/zk51vk21c)**, it is, as far as anyone knows, the best program generation algorithm there is. All non-trivial Busy Beaver champions were discovered using Brady's algorithm, including [the first one](https://nickdrozd.github.io/2021/07/11/self-cleaning-turing-machine.html) and [the second one](https://nickdrozd.github.io/2022/01/10/another-self-cleaning-turing-machine.html) that I found.
+
+The goal of the algorithm is to yield a list of programs that are **worth investigating further**. We want to avoid **duds**, but we also want to avoid discarding anything that might be valuable. In short, we want to pass on **all and only interesting programs** to stage two.
+
+A nice feature of Brady's algorithm is that it is **parallelizable**, so that's how I'll describe it. Imagine that there are some **workers** and a **pile of programs**. Initially there is just one program in the pile, which is **totally undefined** except for the instruction `A0 -> 1RB`. Every worker now undertakes the following task:
+
+1.  Grab a program from the pile (or wait a short while if the pile is empty and try again, and **quit** if it's still empty).
+
+2.  **Run** that program for up to some fairly small number of steps (between one and three hundred, say) or until an undefined instruction is reached or a termination condition is detected.
+
+3.  If the step limit is reached, **output the program** &#x2013; it might be a good one!
+
+4.  If a **termination condtiion** like **[Lin recurrence](https://nickdrozd.github.io/2021/02/24/lin-recurrence-and-lins-algorithm.html)** is reached, **throw the program away** &#x2013; it's no good!
+
+5.  If an **undefined instruction** is reached, construct all the possible **extensions** of the program at that instruction slot pursuant to these **constraints**: the states that can be used are the states that have been visited so far plus the next one that hasn't, and similar or colors. Put each extension back on the pile.
+
+6.  Go back to step 1.
+
+And that's the whole algorithm! A key optimization is the constraint introduced in step 5. This is what eliminates isomorphic duplicates. The algorithm itself solves the problem of eliminating programs with **unreachable instructions** by only dealing with those programs whose instructions have in fact been reached.
+
+The **parameters** of the procedure are run step limit and the choice of termination conditions. I have only been able to implement detection for Lin recurrence, and it would work even better to include detection for so-called **Christmas tree recurrence** and **counting recurrence**.
+
+**Examples**. The initial 4-state 2-color program is
+
+{% highlight nil %}
+1RB ...  ... ...  ... ...  ... ...
+{% endhighlight %}
+
+After one step it reaches the `B0` instruction, which is undefined. Its extensions are
+
+{% highlight nil %}
+1RB ...  1LA ...  ... ...  ... ...
+1RB ...  1LC ...  ... ...  ... ...
+1RB ...  1LB ...  ... ...  ... ...
+1RB ...  1RA ...  ... ...  ... ...
+1RB ...  1RC ...  ... ...  ... ...
+1RB ...  1RB ...  ... ...  ... ...
+1RB ...  0LA ...  ... ...  ... ...
+1RB ...  0LC ...  ... ...  ... ...
+1RB ...  0LB ...  ... ...  ... ...
+1RB ...  0RA ...  ... ...  ... ...
+1RB ...  0RC ...  ... ...  ... ...
+1RB ...  0RB ...  ... ...  ... ...
+{% endhighlight %}
+
+Notice that state `D` is not used. The states that have been visited are `A` and `B`, and state `C` is next, so `D` cannot be used.
+
+The initial 2-state 4-color program is
+
+{% highlight nil %}
+1RB ... ... ...  ... ... ... ...
+{% endhighlight %}
+
+After one step it reaches the `B0` instruction, which is undefined. Its instructions are
+
+{% highlight nil %}
+1RB ... ... ...  1LA ... ... ...
+1RB ... ... ...  1LB ... ... ...
+1RB ... ... ...  1RA ... ... ...
+1RB ... ... ...  1RB ... ... ...
+1RB ... ... ...  2LA ... ... ...
+1RB ... ... ...  2LB ... ... ...
+1RB ... ... ...  2RA ... ... ...
+1RB ... ... ...  2RB ... ... ...
+1RB ... ... ...  0LA ... ... ...
+1RB ... ... ...  0LB ... ... ...
+1RB ... ... ...  0RA ... ... ...
+1RB ... ... ...  0RB ... ... ...
+{% endhighlight %}
+
+The color `3` is not used, because only colors `0` and `1` have been visited, and `2` is next.
+
+Brady himself seemed to take a somewhat dim view of his algorithm, usually referring to it as an **"algorithm"**, with **"scare quotes"**.
+
+> The [tree generation] process &#x2026; is not an algorithm in the strict sense because of the dependency upon a solution to the halting problem; hence the quotes.
+
+I believe this is due to a **fault in perspective** rather than a fault in the algorithm. Viewed as a solution to the halting problem, it is certainly lacking, because there is no algorithm at all that can solve it. But it *is* an effective procedure for *something*, namely **the set of programs thereby generated**!
