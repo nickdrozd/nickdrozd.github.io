@@ -1,0 +1,115 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: Latest Beeping Busy Beaver Results
+#+date: <2022-02-11 Fri>
+#+author: Nick Drozd
+#+email: nicholasdrozd@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 29.0.50 (Org mode 9.5)
+#+cite_export:
+#+jekyll_layout: post
+#+jekyll_categories:
+#+jekyll_tags:
+
+The [[https://scottaaronson.blog/?p=4916][*Busy Beaver*]] question asks: what is the longest that a Turing machine program of /n/ states and /k/ colors can run when started on the blank tape before halting? The function that maps from /(n, k)/ to the longest run length is *uncomputable* and grows faster than any computable function.
+
+Variations of the Busy Beaver function (BB) can be obtained by changing the [[https://nickdrozd.github.io/2021/02/14/blanking-beavers.html][*termination condition*]]: what is the longest that a Turing machine of /n/ states and /k/ colors can run before doing such-and-such? The *Blanking Beaver* function (BLB) arises from running programs until the Turing machine tape becomes blank, and the *Beeping Busy Beaver* (BBB) function arises from running programs until they reach a condition known as [[https://nickdrozd.github.io/2021/01/14/halt-quasihalt-recur.html][*/quasihalting/*]].
+
+|----------+-------------|
+| Function | Termination |
+|----------+-------------|
+| BB       | Halt        |
+| BLB      | Blank tape  |
+| BBB      | Quasihalt   |
+|----------+-------------|
+
+Here are the *latest and greatest lower bounds* that have been discovered for early values of these functions:
+
+|--------+--------+------------+-------------------+---------------------------------|
+| States | Colors |         BB |               BLB |                             BBB |
+|--------+--------+------------+-------------------+---------------------------------|
+|      2 |      2 |          6 |                 6 |                               8 |
+|      3 |      2 |         21 |                34 |                              55 |
+|      2 |      3 |         38 |                77 |                              59 |
+|      4 |      2 |        107 |        32,779,477 |                      32,779,478 |
+|      2 |      4 |  3,932,964 | 1,367,361,263,049 | 205,770,076,433,044,242,247,859 |
+|      5 |      2 | 47,176,870 |                   |                                 |
+|--------+--------+------------+-------------------+---------------------------------|
+
+(I claim that *all the small values are the true values*, but that's for a separate post.)
+
+These numbers suggest several *plausible hypotheses*:
+
+1. *BLB grows faster than BB.*
+2. *BBB grows faster than BB.*
+3. *BBB grows faster than BLB.*
+
+(2) and (3) are both known from *computability theory* to be true. This has to do with the termination conditions. At any given step it's possible to determine whether or not the machine is /currently/ halted and whether or not the tape is /currently/ blank. In other words, they are *decidable predicates*. Determining whether a machine will /eventually/ halt or whether the tape will /eventually/ become blank requires an unbounded search for a decidable predicate, and that search is *semidecidable*: if the condition eventually holds, it will turn up, but otherwise it won't.
+
+In contrast, checking whether a machine is currently quasihalted or not is already semidecidable, and solving this in general is equivalent to the *halting problem*. Checking whether a machine will /eventually/ quasihalt thus requires an unbounded search for an uncomputable predicate, and this means that BBB is a *super-uncomputable function*. Just as BB grows faster than any computable function, BBB grows faster than any function that is *"just" regular-uncomputable*.
+
+Computability theory is a *theory*, and that theory makes *predictions*, and one of those predictions is that BBB, as a super-uncomputable function, should grow really, really fast. Thus these *empirical results* about Turing machine program behavior serve to *confirm the theory's predictions*.
+
+What about BB and BLB? These functions are *equicomputable*, and one can be solved given an *oracle* for the other. Computability theory doesn't make a prediction about which one grows faster. All known empirical results suggest that BB < BLB, but as [[https://scottaaronson.blog/?p=5661#comment-1900309][Bruce Smith]] pointed out, *we can't even prove that BLB ≤ BB*!
+
+*Provability* is important from a mathematical point of view. But the Busy Beaver problem was originally posed as a *competition* to see who could come up with the longest-running program. Searching for long-running Turing machines is like *prospecting for gold*, and it requires making predictions about where the winning programs might be found, even if these predictions cannot be backed up wth proofs. *I made a few predictions myself, and they turned out to be correct.*
+
+Here are the best values that had been discovered through *the end of 2021*:
+
+|--------+--------+------------+------------+------------|
+| States | Colors | BB         | BLB        | BBB        |
+|--------+--------+------------+------------+------------|
+|      4 |      2 | 107        | 32,779,477 | 32,779,478 |
+|      2 |      4 | 3,932,964  | 190,524    | 2,501,552  |
+|      5 |      2 | 47,176,870 |            |            |
+|--------+--------+------------+------------+------------|
+
+This is the situation with which I, as a searcher, was faced. I had searched for 2-state 4-color blank-tape and quasihalting programs up through several hundred million steps, and that was the best I had found. *Were these the true values?* It seemed unlikely to me that BBB(2, 4) < BB(2, 4). Again, computability theory tells us that *the super-uncomputable function should grow uncomputably faster than the regular-uncomputable function*. There's no good reason why it shouldn't start early, so I figured it probably did.
+
+Things were not so clear with BLB. Again, there's no proof even that BLB ≤ BB, so maybe BLB(2, 4) < BB(2, 4). But my [[https://nickdrozd.github.io/2021/07/11/self-cleaning-turing-machine.html][previous discovery of the *BLB(4, 2) champion* ]] gave me an *unshakeable hunch* that there was still more to find.
+
+It's not always easy to discern *justifiable faith* from *blind fanaticism*. I certainly didn't want to waste a bunch of time searching for something that never existed in the first place, so I set a *limit* beyond which I would not bother searching. I reasoned as follows: The ratio BLB(4, 2) / BB(4, 2) works out to about 306,350. If BLB(2, 4) / BB(2, 4) holds the same ratio, then we should have something like BLB(2, 4) ≈ 1,204,863,521,400, or 1.2 trillion. Rounding up, that means searching within 2 trillion steps or so.
+
+This was really a *grasping-at-straws* kind of estimate, totally made up, with no good reason to believe that it would hold. So imagine my surprise when [[https://nickdrozd.github.io/2022/01/10/another-self-cleaning-turing-machine.html][*the estimate turned out to be accurate!*]] A new BLB champion turned up to prove that BLB(2, 4) ≥ 1,367,361,263,049. That same program quasihalts too, but earlier, establishing that BBB(2, 4) ≥ 1,367,354,345,128.
+
+Here is the updated results table through *mid-January 2022*:
+
+|--------+--------+------------+-------------------+-------------------|
+| States | Colors | BB         | BLB               | BBB               |
+|--------+--------+------------+-------------------+-------------------|
+|      4 |      2 | 107        | 32,779,477        | 32,779,478        |
+|      2 |      4 | 3,932,964  | 1,367,361,263,049 | 1,367,354,345,128 |
+|      5 |      2 | 47,176,870 |                   |                   |
+|--------+--------+------------+-------------------+-------------------|
+
+According to this table, BLB(2, 4) > BBB(2, 4). This wouldn't too different from the 4-state 2-color case, where as far as we know BLB(4, 2) + 1 = BBB(4, 2). It's just that *a single program is the champion for multiple classes*, and the various termination conditions are hit at different steps.
+
+We know that BB and BLB are equicomputable, and so, I figured, maybe they maintain some kind of relationship in their growth. But BBB is *uncomputable even with respect to these uncomputable functions*. BBB grows faster than BLB, and historically Busy Beaver searchers have always understimated how fast BB grows. Putting these facts together, I decided that it the true value of BBB(2, 4) must be even further out.
+
+To find the BLB(2, 4) champion, I used [[https://github.com/nickdrozd/busy-beaver-stuff/tree/main/idris][a simulator written in *Idris*]]. It's pretty fast, but I felt I had reached the limits of what it could do. And so I turned to [[https://github.com/sligocki/busy-beaver][a simulator written by *Shawn and Terry Ligocki*]]. That simulator, which was used to discover many [[https://webusers.imj-prg.fr/~pascal.michel/ha.html][historical BB candidates]], does some sophisticated runtime analysis and is able to provide a *massive speed-up* in certain cases. If those kinds of programs existed in the 2-state 4-color space, this simulator would find them.
+
+And it did! On 24 January 2022, I found a program that quasihalts in 67,093,892,759,901,295 steps (about 67 quadrillion). *This was more like how I had expected things to look based on what I knew from theory.*
+
+I reported this value to [[https://www.sligocki.com/][*Shawn Ligocki*]] along with the search parameters used. He then pushed his simulator even further, and on 7 February 2022 he reported a 2-state 4-color program that quasihalts in 205,770,076,433,044,242,247,859 steps (about 205 sextillion). *That is where the record stands today.*
+
+* 2-state 4-color Champion Programs
+
+|------------------------------------+---------------------------------+----------------------------|
+| Program                            | Steps                           | Notes                      |
+|------------------------------------+---------------------------------+----------------------------|
+| =1RB 2RA 1RA 2RB ; 2LB 3LA 0RB 0RA= | 1,367,361,263,049               | Current BLB(2, 4) champion |
+| =1RB 2RA 1LA 2LB ; 2LB 3RB 0RB 1RA= | 67,093,892,759,901,295          | Former BBB(2, 4) champion  |
+| =1RB 2LA 1RA 1LB ; 0LB 2RB 3RB 1LA= | 205,770,076,433,044,242,247,859 | Current BBB(2, 4) champion |
+|------------------------------------+---------------------------------+----------------------------|
+
+* Discussion Questions
+
+1. Why should the BLB / BB ratio hold?
+2. How likely is it that BLB(5, 2) > 47,176,870?
+3. How likely is it that BBB(4, 2) = 32,779,478?
+4. Why would a simulator only be able to provide speed-up in "certain cases"? Which cases?
