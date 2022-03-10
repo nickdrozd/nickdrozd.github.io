@@ -1,0 +1,29 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: ذس پوست س رتن ن ینگلش
+#+date: <2022-03-10 Thu>
+#+author: Nick Drozd
+#+email: nicholasdrozd@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 29.0.50 (Org mode 9.5)
+#+cite_export:
+#+jekyll_layout: post
+#+jekyll_categories:
+#+jekyll_tags:
+
+ذ ینگلش لانگواج س وژالی رتن ن ذ رومن الفابت. بت اس وی ال نو، ذس س ا باد چویس. ینگلش هاس ساوندس ذات ار نت رپرسنتد. ان توپ ف زات، هیستوریکال ورثوگرافی س وایلدلی ینکونسیستینت. ت س ا چالینج، تو سی ذ لیست.
+
+س ذیر ان التیرناتیف؟ ن پارتیکولار، کود ارابیک سکریپت سیرف اس ا رپلیسمنت؟
+
+ویل، نو.
+
+فور ون ثینگ، سن'ت ریلی ذ ارابیک الفابت، ت'س ذ پرژن الفابت. ذس فاریانت ینکلودس ا فیو کریتیکال لیترس میسنگ فرم ارابیک: گ، پ، اند چ. ذوس موست لانگواجس وسنگ "ارابیک" ار ریلی بپرژن.
+
+ذ ارابیک سثریپت س الریدی ا تربل چویس فر پرژن. ت وورکس ویل فر ارابیک، وذر لانگواجس. سپیکرس ف پرژن فیس دیفیکولتیس وث ارابیک سکریپت سیمیلار تو ینگلش سپیکرس وث رومن سکریپت.
+
+ذس پوست وس رتن بای هاند. ای'م شور ذ سپیلنگ یس نت کنسیستینت. شود وردس بی سپیلد اس ذی ساوند؟ ور شود ذی بی رتن ارابیک−ستایل، وث واولس یلایدد؟ ذیز ار هارد کویسچنس.
