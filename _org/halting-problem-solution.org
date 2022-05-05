@@ -1,0 +1,178 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: A Solution to the Halting Problem
+#+date: <2022-05-05 Thu>
+#+author: Nick Drozd
+#+email: nicholasdrozd@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 29.0.50 (Org mode 9.5.2)
+#+cite_export:
+#+jekyll_layout: post
+#+jekyll_categories:
+#+jekyll_tags:
+
+Please excuse my *clickbait* title. It was intended to trigger the emotions of the kind of people who get worked up about computability theory. Of course I don't have a solution to the halting problem -- *there is no such thing*. Instead, I want to talk about a *partial solution* to the halting problem, a method to solve it for *certain instances*. And to make up for the misleading title, I'll also discuss how to extend the method to *other similar problems*.
+
+The halting problem is this: *given a program, does it halt or not?* Sometimes the problem is stated in terms of a program run on an input, or a program run on something like its own source code. For our purposes, we'll consider a program to be *self-contained*, like a compiled binary that accepts no arguments.
+
+A solution to the halting problem would be a *[[https://nickdrozd.github.io/2022/04/01/total-partial-functions.html][total function]]* with the type signature =Program -> Bool=. *Turing's Theorem* says that such a function cannot exist, and any function with that signature must be either *partial* or *incorrect*. (If this sounds similar to Gödel's Incompleteness Theorem, it's because [[https://scottaaronson.blog/?p=710][G's theorem follows directly from T's]].) Incorrect functions are bad, so we'll settle for partial. Or rather, the function we'll implement will declare a program to be non-halting only when it is *absolutely sure*; in the iffy cases, it won't declare the program to be nonhalting.
+
+The term "program" is a bit vague. What kind of programs are we talking about here? Python? C? No, as usual we'll be talking about *[[https://nickdrozd.github.io/2020/10/04/turing-machine-notation-and-normal-form.html][Turing machines]]*. And there is even a specific application for this: the *[[https://nickdrozd.github.io/2020/10/15/busy-beaver-well-defined.html][Busy Beaver game]]*. The primary use here is in [[https://nickdrozd.github.io/2022/01/14/bradys-algorithm.html][paring down the search space]]. The second use is in [[https://nickdrozd.github.io/2020/12/15/lin-rado-proof.html][proving the true values]] of the Busy Beaver function.
+
+Following [[http://turbotm.de/~heiner/BB/mabu90.html][Marxen and Buntrock]], we can say that there are two methods for determining nonhaltingness: *forward reasoning* and *backward reasoning*. Reasoning forward means determining that the program will repeat some kind of behavior forever, and that therefore it will not halt. Detecting *[[https://nickdrozd.github.io/2021/02/24/lin-recurrence-and-lins-algorithm.html][Lin recurrence]]* is an example of forward reasoning. Reasoning backward means starting from the end of the program and showing that there is no possible path to the halt instruction. An *algorithm* for doing that is what we'll be concerned with here.
+
+Now, there is one quick and easy way to tell that a program will never halt. *If there are no halt instructions, it definitely won't halt.* /Halt-free/ programs can be dismissed out of hand, and the absence of a halt instruction can be checked using simple string functions. This kind of check belongs to *static analysis*.
+
+The static instruction check can be applied to behaviors other than halting. Consider, for example, *[[https://nickdrozd.github.io/2021/07/11/self-cleaning-turing-machine.html][self-cleaning]]* Turing machines that erase all the marks on the tape. In order wipe the tape clean, a program must have at least one *erase instruction*, an instruction that prints a blank upon scanning a mark. If a program does not have any erase instructions -- and again, this is a quick and easy check -- then it definitely cannot be self-cleaning, and therefore can be ignored as a candidate for the *[[https://nickdrozd.github.io/2021/02/14/blanking-beavers.html][Blanking Beaver]]* problem.
+
+For another example, consider the behavior known as */[[https://groups.google.com/g/busy-beaver-discuss/c/Dq8PYAkoMXU][spinning out]]/*. Here, the machine is scanning a blank cell directly to the left (or right) of all the marks on the tape, and the next instruction keeps control in the current state with a move to the left (or right). A machine in this circumstance will get "stuck" doing the same move forever. This is the simplest possible form of *[[https://nickdrozd.github.io/2021/01/14/halt-quasihalt-recur.html][quasihalting]]*, and all known *[[https://nickdrozd.github.io/2022/02/11/latest-beeping-busy-beaver-results.html][Beeping Busy Beaver]]* champions are spinners. There is an easy static check for this behavior: a program must have at least one */zero-reflexive/* instruction, an instruction that keeps the state the same upon scanning a blank.
+
+The halting problem asks whether a given program will halt, and along those same lines the *blank tape problem* and the *spin-out problem* ask whether a given program will blank the tape or spin out. An *oracular solution* for any one of these problems could be used to solve the other two, and so all three problems are *co-computable*.
+
+*But in practice, the halting problem is easier.* We're assuming that programs are self-contained and run without input arguments of any kind, and therefore only one of a program's halt instructions can actually be executed. A common way to go about Busy Beaver searching is to discard out of hand any program with more than one halt instruction, since such a program has *wasted some of its precious few instructions*. But a program can have multiple erase or zero-reflexive instructions and they can all be used more than once.
+
+The static analysis approach to the halting (blanking, spin-out) problem is *easy to implement* and *fast to run*. It makes for a great first pass. However, it's *shallow* and it leaves a lot on the table. There are programs that have the required instructions but still cannot halt (or wipe the tape, or spin out).
+
+To show that these cannot reach their goals, we will *run the programs backwards*. Yes, we'll actually run them, and therefore this is a form of *dynamic analysis*. There are some downsides to the dynamic approach: it is slow, difficult to implement, and occasionally memory-intensive. The tradeoff is that it is *more thorough*, and it is capable of returning correct, definitive answers for a wider range of programs. (But it still isn't a general solution to the halting problem, because again, *there is no such thing*.)
+
+The basic idea is that we will start from where we want to end up, and then work backwards from there. If we can *reconstruct a path to that endpoint* within a certain number of steps, then we will say that the program might reach that endpoint; on the other hand, if we can show that there is no possible path, then we can definitively say that the program will not reach that endpoint. In the latter case, we will have *solved that instance of the halting problem*.
+
+This post has gone on for a while, and *describing algorithms is hard*, so I'm going to stop here and just post some code. This is *[[https://github.com/nickdrozd/busy-beaver-stuff/blob/main/generate/program.py][real working code]]* that has been [[https://groups.google.com/g/busy-beaver-discuss/c/KofE0K7_AbQ][used for real]]. I'm posting it as-is -- no touch-ups, no tidying, none of that. /If anyone has actually read this far but finds the code unclear and wants further explanation of the backward-reasoning algorithm, please let me know and I'll write up another post./
+
+And with that, here's a (partial) solution to the halting (and blanking and spin-out) problem:
+
+#+begin_src python
+class Program:
+    # ... other stuff ...
+
+    @property
+    def cant_halt(self) -> bool:
+        return self._cant_reach(
+            'halted',
+            self.halt_slots,
+        )
+
+    @property
+    def cant_blank(self) -> bool:
+        return self._cant_reach(
+            'blanks',
+            self.erase_slots,
+            blank = True,
+        )
+
+    @property
+    def cant_spin_out(self) -> bool:
+        return self._cant_reach(
+            'spnout',
+            tuple(
+                state + str(0) for state in
+                self.graph.zero_reflexive_states),
+        )
+
+    def _cant_reach(
+            self,
+            final_prop: str,
+            slots: Tuple[str, ...],
+            max_attempts: int = 24,
+            blank: bool = False,
+    ):
+        configs: List[
+            Tuple[int, str, BlockTape, int, History]
+        ] = [                              # type: ignore
+            (
+                1,
+                state,                     # type: ignore
+                BlockTape([], color, []),  # type: ignore
+                0,
+                History(),
+            )
+            for state, color in sorted(slots)
+        ]
+
+        comp = tcompile(str(self))
+
+        max_repeats = max_attempts // 2
+
+        seen: Dict[str, Set[str]] = defaultdict(set)
+
+        while configs:  # pylint: disable = while-used
+            step, state, tape, repeat, history = configs.pop()
+
+            if step > max_attempts:
+                return False
+
+            if state == 'A' and tape.blank:
+                return False
+
+            if (tape_hash := str(tape)) in seen[state]:
+                continue
+
+            seen[state].add(tape_hash)
+
+            history.add_state_at_step(step, state)  # type: ignore
+            history.add_tape_at_step(step, tape)
+
+            if history.check_for_recurrence(
+                    step,
+                    (state, tape.scan)) is None:  # type: ignore
+                repeat = 0
+            else:
+                repeat += 1
+
+                if repeat > max_repeats:
+                    continue
+
+            history.add_action_at_step(
+                step,
+                (state, tape.scan)) # type: ignore
+
+            # print(step, state, tape)
+
+            for entry in sorted(self.graph.entry_points[state]):
+                for _, (_, shift, trans) in self[entry].items():
+                    if trans != state:
+                        continue
+
+                    for color in sorted(map(int, self.colors)):
+                        next_tape = tape.copy()
+
+                        _ = next_tape.step(
+                            not (0 if shift == 'L' else 1),
+                            next_tape.scan,
+                        )
+
+                        next_tape.scan = color
+
+                        run = Machine(comp).run(
+                            step_lim = step + 1,
+                            tape = next_tape.copy(),
+                            state = ord(entry) - 65,
+                            check_blanks = blank,
+                        )
+
+                        result = getattr(run.final, final_prop)
+
+                        if result is None:
+                            if run.final.undfnd is None:
+                                continue
+
+                            result = step + 1
+
+                        if abs(result - step) > 1:
+                            continue
+
+                        configs.append((
+                            step + 1,
+                            entry,
+                            next_tape,
+                            repeat,
+                            history.copy(),
+                        ))
+
+        return True
+#+end_src
