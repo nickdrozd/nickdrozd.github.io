@@ -1,0 +1,45 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: Heaven Must Be Missing a Syllable
+#+date: <2022-05-18 Wed>
+#+author: Nick Drozd
+#+email: nicholasdrozd@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 29.0.50 (Org mode 9.5.2)
+#+cite_export:
+#+jekyll_layout: post
+#+jekyll_categories:
+#+jekyll_tags:
+
+In English-language hymns, the word "heaven", which clearly has two syllables, is commonly treated as if it had just one syllable. It's an old tradition, but not a proud one. It's embarrassing, really. It's a stupid practice, and it's terrible to sing, and I hate it.
+
+To illustrate, here's a hymn selected at random:
+
+[[/assets/2022-05-18-heaven-syllable/lead-us-heavenly-father.png]]
+
+The first two bars have four quarter notes apiece, with the first bar going up and the second bar going down. The third verse has a standard strong-weak scansion: "SPIR-it OF our GOD de-SCEND-ing". All well and good.
+
+But look at the third "syllable" of the first verse. There it is. "Heaven" stuck to one note. "LEAD us HEAV(EN?)-ly FA-ther LEAD us". What are you supposed to do with that? How do you sing two syllables as one? If you're lucky the tune will be played fast, and then you just kinda blur the syllables together, so that "heaven" sounds like "hen". If you aren't so lucky, it will be played slow, and you will be stuck trying to deal with that extra syllable. If there's a whole congregation singing, they won't be able to coordinate it properly and it will sound like mush.
+
+In many Protestant churches, this trainwreck is a regularly scheduled event known as the "Doxology":
+
+[[/assets/2022-05-18-heaven-syllable/doxology.jpg]]
+
+This gets sung every week, right after the money plate is passed around, and it goes slow. As a kid I always dreaded singing it, because the crunched syllable in "heavenly host" was just so cringe-inducing. (It was also a hymn sung without a hymnal, and I think the congregation wasn't really clear about the word "host". That certainly didn't help.)
+
+The most famous case of pretending that "heaven" doesn't have two syllables is in the Christmas carol "Joy to the World":
+
+[[/assets/2022-05-18-heaven-syllable/joy-to-the-world.jpg]]
+
+"And heav'n and nature sing". Here the ruse succeeds by cheating; a French-style liaison results in the "n" of "heaven" being pronounced as if it were the first letter of "and", as in "heav nan nature". Generally, heaven-with-one-syllable is workable as long as the subsequent word begins with a vowel: "heav'n above", "heav'n eternal", etc.
+
+But wait a minute, don't we crunch syllables in English all the time? For example, what about the phrase "every chocolate camera"? It has six syllables and not nine because each of those words get crunched. Why not crunch "heaven" too?
+
+It's true that English speakers have a tendency to drop syllables, but only in certain circumstances. Specifically, there needs to be a weak syllable with an indeterminate vowel surrounded by strong syllables. But "heaven" is a word with just two syllables, and they're both required. You can't drop either of them.
+
+Sometimes an apostrophe is added: "heav'n". I interpret this as an admission of shame on the part of the composer. It says: I know there's just one syllable of space here, but I really needed to mention heaven; please don't think too hard about it. But this postage stamp-sized figleaf is inadequate to cover things up.
