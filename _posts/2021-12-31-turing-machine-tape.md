@@ -21,7 +21,7 @@ The Turing machine's tape is sometimes described as being **"infinite in both di
 
 Suppose we are interested in writing a **simulator** for a Turing machine. **How should the tape be represented?** The sequence of tape operations just described suggests a **tape interface**:
 
-{% highlight haskell %}
+{% highlight idris %}
 Color : Type
 Color = Nat
 
@@ -36,14 +36,14 @@ Tape tape where
 
 This interface prescribes the operations that any tape representation needs to implement. But what about the tape type itself? What does it look like? The obvious way to represent the tape is to use an **array** of some kind (vector, list, tuple, whatever), with the position of the tape head represented by an **index pointer** into the array.
 
-{% highlight haskell %}
+{% highlight idris %}
 PointerTape : Type
 PointerTape = (i : Nat ** (Fin (S i), Vect (S i) Color))
 {% endhighlight %}
 
 Now, an array is of finite length, but the Turing machine tape is of infinite / unbounded / unspecified length. An array can be made to be "plenty long" by using a technique called **dynamic tape allocation**. If the array pointer (representing the tape head) reaches either end of the array (the tape), new cells are simply added to the array. From the point of view of the tape head, it will appear as if there are infinitely many cells. With this strategy in mind, the `Tape` interface can be implemented for `PointerTape`:
 
-{% highlight haskell %}
+{% highlight idris %}
 implementation
 Tape PointerTape where
   read    (_ ** (pos, tape)) =
@@ -79,7 +79,7 @@ One prominent feature of the pointer model is that **tape cells are treated unif
 
 Thus, the **Scan 'n' Span model**:
 
-{% highlight haskell %}
+{% highlight idris %}
 ScanNSpan : Type -> Type
 ScanNSpan span = (span, Color, span)
 {% endhighlight %}
@@ -88,7 +88,7 @@ In this model, **the relationship between the tape and the tape head is reversed
 
 Leaving things abstract for a moment, here's an interface to describe how the spans are expected to behave:
 
-{% highlight haskell %}
+{% highlight idris %}
 interface
 Spannable span where
   pull : span -> (Color, span)
@@ -97,7 +97,7 @@ Spannable span where
 
 The most obvious way to implement a span is with a list. But a **list of what?** For the moment this question doesn't need to be answered &#x2013; it is enough to know that the list unit is spannable:
 
-{% highlight haskell %}
+{% highlight idris %}
 implementation
 Spannable (List unit) => Tape (ScanNSpan (List unit)) where
   read    (_, c, _) = c
@@ -115,7 +115,7 @@ Spannable (List unit) => Tape (ScanNSpan (List unit)) where
 
 All that's left to get a concrete representation is to determine a unit type and then implement `Spannable` for `List unit`. A perfectly good way to do this is to use a list of individual cells:
 
-{% highlight haskell %}
+{% highlight idris %}
 implementation
 Spannable (List Color) where
   pull []        = (0, [])
@@ -131,14 +131,14 @@ And that's it! The Scan 'n' Span model is **dramatically simpler** than the poin
 
 It's common for Turing machine programs to leave long stretches of the tape with the same color. The memory for the tape representation can be reduced by using **run-length encoding**, with the repeated cells of the same color represented by a single cell with a color and an **exponent**:
 
-{% highlight haskell %}
+{% highlight idris %}
 Block : Type
 Block = (Color, Nat)
 {% endhighlight %}
 
 Again, it is easy to get a concrete tape representation by implementing `Spannable` for `List Block`:
 
-{% highlight haskell %}
+{% highlight idris %}
 implementation
 Spannable (List Block) where
   pull [] = (0, [])
