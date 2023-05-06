@@ -1,0 +1,64 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: The High Price of Abstraction in Python
+#+date: <2023-05-06 Sat>
+#+author: Nick Drozd
+#+email: nicholasdrozd@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 30.0.50 (Org mode 9.5.5)
+#+cite_export:
+#+jekyll_layout: post
+#+jekyll_categories:
+#+jekyll_tags:
+
+#+begin_quote
+Some say the price of holding heat is often too high \
+You either be in a coffin or you be the new guy \
+The one that's too fly to eat shoe pie
+
+-- MF DOOM
+#+end_quote
+
+Suppose I am looping over a range of numbers to see if any of them matches some magic number:
+
+#+begin_src python
+for i in range(1_000_000_000):
+    if i == -1:
+        break
+#+end_src
+
+On my modest desktop, this takes *60 seconds* to execute.
+
+But as everyone knows, using [[https://en.wikipedia.org/wiki/Magic_number_(programming)][magic numbers]] in code is bad. It would be clearer and more maintainable to express the value as a variable:
+
+#+begin_src python
+MAGIC_NUMBER = -1
+
+for i in range(1_000_000_000):
+    if i == MAGIC_NUMBER:
+        break
+#+end_src
+
+On my modest desktop, this takes *70 seconds* to execute. Ten seconds longer -- that's not great!
+
+Okay, so forget about variables. A better form of abstraction would be to get the comparison logic out of the loop and centralize it in a function:
+
+#+begin_src python
+def number_matches(num: int) -> bool:
+    return num == -1
+
+for i in range(1_000_000_000):
+    if number_matches(i):
+        break
+#+end_src
+
+On my modest desktop, this one takes *110 seconds* to execute. The price to be paid for this minor organizational improverment is a *catastrophic degradation of performance*.
+
+The situation is grim if you have some Python [[https://nickdrozd.github.io/2022/04/12/performance-hot-spots.html][hot spot]] code that needs to be cleaned up. Because it's a hot spot, any abstraction could have *dire consequences*, and so the range of acceptable changes is constrained.
+
+On the other hand, this is great news if you have a hot spot that uses abstractions. *It may be possible to trade a little maintainability for a lot of speedup.* Inline some constants, inline some function calls, that kind of thing. It doesn't look nice, but hey, it's Python.
