@@ -1,0 +1,50 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: =eval= should not be a built-in function
+#+date: <2023-10-27 Fri>
+#+author: Nick Drozd
+#+email: nicholasdrozd@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 30.0.50 (Org mode 9.6.6)
+#+cite_export:
+#+jekyll_layout: post
+#+jekyll_categories:
+#+jekyll_tags:
+
+Python provides 70 or so */[[https://docs.python.org/3/library/functions.html][built-in functions]]/*. These are functions that are immediately available and do not need to be imported from a module. Built-ins provide *basic, broadly-applicable* functionality. For example: =print=, =range=, =len=, =abs=, =enumerate=, etc. Anyone who writes Python code will end up using some of these functions at some point.
+
+One built-in function is not like the others: [[https://docs.python.org/3/library/functions.html#eval][*=eval=*]]. This function accepts a string argument and returns the value of the string when evaluated as Python code. Built-in functions ought to be basic and broadly-applicable. But =eval= is neither: it is at once *extraordinarily powerful* and *practically useless*. Not useless in the sense that it cannot be put to any use, because it certainly can be; but useless in the sense that it is almost certainly the wrong tool to use.[fn:1]
+
+I can't think of any reason why =eval= should be made immediately globally available to all Python programmers. Its inclusion as a built-in goes back at least as far as *[[https://docs.python.org/release/1.4/lib/node26.html#SECTION00330000000000000000][Python 1.4]]* from 1996. The Python userbase back then must have been very different from what it is today. Perhaps it had a much higher percentage of hardcore programmers who had legitimate uses for =eval= as well as an understanding of why it should not be used. Or perhaps it was a bad idea at the time too.
+
+To be clear, I am not advocating for getting rid of =eval=. It has its place in certain *code-generation tasks*. Libraries like Pytest and Pydantic and the standard =dataclass= module use it for things like dynamic class generation and runtime object introspection[fn:2].
+
+Instead, what's needed is some *anti-discoverability*. It's too easy to just happen upon =eval=; and anyone who just happens upon =eval= definitely should not use it. Including it as a built-in creates the illusion that it is fine and reasonable to use the function casually. It shouldn't be used casually, and there should be a *daunting barrier* to indicate this. The simplest way to do this would be require importing it from a scary-looking module, like one of the [[https://docs.python.org/3/library/language.html][Python language services]].
+
+*Personally, I have found exactly one good use for =eval=.* It had to do with code for representing arithmatic expressions. There was, for example, an =Exponent= class to represent expressions like /2^3/. I wanted this to be stringified as valid Python, as in =2 ** 3=. To verify this, I added some test code along the lines of:
+
+#+begin_src python
+assert int(exp := Exponent(2, 3)) == eval(str(exp))
+#+end_src
+
+Notice that this is a /code-generation task/: I am actually trying to create some Python code, and so it is reasonable to consider =eval=. Notice as well that this was only done in *test code*, where standards are generally a little looser.
+
+*In the wild* I've run across three uses of =eval=, each one terrible:
+
+1. Four functions were defined to get times: =days=, =weeks=, =months=, and =years=. A string argument =period= was passed in to determine which would be called. The appropriate time function was called as follows: =eval(period + '()')=. *Woof*. A dramatically simpler and safer way is to stick the functions in a dictionary and then key in with the string argument.
+
+2. A list of file names was defined, along with a bunch of strings like ='os.sep'=. These strings were then all appended together, passed to =eval=, and then passed on to some path-manipulation functions. I never figured out what exactly it was doing, though it was nevertheless obvious that =eval= was not being used appropriately.
+
+3. A new report was added to a boring business web app. The report contained some fancy nested tables, and the tables were dynamically generated based on a query paremter, say ~?name=business_asset~. The name =business_asset= was not statically available, but it was expected that at runtime there would be a variable called =business_asset=. And wouldn't you know it, =eval(request.args.get('name'))= was used to get that the value of that variable. Yes, *the query parameter was passed directly into =eval=*, exactly the thing that everyone says to watch out for. In that situation, problems can arise if a user passes in a "name" like ='__import__("os").listdir()'= or something similar. (Although this use of =eval= was dangerous, I can see why it was done. This issue was fixed by replacing it with safe code, and that safe code turned out to be ugly and hard to understand.)
+
+The change I am proposing probably would have prevented the first two of these three uses. The third one would have happened anyway -- indeed, that use of =eval= was accompanied by a pragma comment: *~# pylint: disable = eval-used~*.
+
+* Footnotes
+[fn:1] =exec= is a built-in function that is subtly different from =eval= in terms of how it is called, but identical in spirit. Everything said here about =eval= applies to =exec=. Actually, in Python 2 =exec= was a /statement/ rather than a /function/, which is much worse.
+
+[fn:2] Even in those cases where it can be used, it may still not be the best choice. As Paul Graham once said, /"calling =eval= explicitly is like buying something in an airport gift-shop. Having waited till the last moment, you have to pay high prices for a limited selection of second-rate goods."/
