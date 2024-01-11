@@ -1,0 +1,31 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: Pro-AI?
+#+date: <2024-01-11 Thu>
+#+author: Nick Drozd
+#+email: nicholasdrozd@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 30.0.50 (Org mode 9.6.6)
+#+cite_export:
+#+jekyll_layout: post
+#+jekyll_categories:
+#+jekyll_tags:
+
+Recently I was described as *"pro-AI"*. "Oh, ChatGPT? You should ask Nick about that, he's /pro-AI/."
+
+I was a little taken aback, as "pro-AI" is not how I would ever think to describe my own thoughts and feelings. It's not /wrong/ wrong, I guess. I mean, I'm not /anti/-AI in the way that some people are. But still, "pro-AI" is too vague to be useful, and is prone to wild misinterpretation.
+
+/"Okay, so how do you want to be described then?"/
+
+At this point, with respect to AI, I think my position can be summed up as */optimistic resignationism/*.
+
+- */Resignationist/*: this technology will be /dramatically impactful/ in /all sorts of ways/, and its development is /inevitable/ and /unstoppable/.
+
+- */Optimistic/*: along with all of its many negative impacts, there will be /lots of cool and amazing things/, and maybe even the possibility for some /positive social change/.
+
+In short: *It's going to be a bumpy ride to an unknown destination. But the in-flight entertainment will be great.*
