@@ -1,0 +1,53 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: www.thug.com
+#+date: <2024-03-05 Tue>
+#+author: Nick Drozd
+#+email: nicholasdrozd@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 30.0.50 (Org mode 9.6.6)
+#+cite_export:
+#+jekyll_layout: post
+#+jekyll_categories:
+#+jekyll_tags:
+
+*/www.thug.com/* is a 1998 album by the American rapper *Trick Daddy*. The music itself is not especially remarkable (the production is pretty bland, but there is some decent rapping), but it is notable for its Internet-themed title and cover:
+
+[[/assets/www.thug.com/www.thug.com.jpg]]
+
+*References to technology pose a conundrum for rappers.* On the one hand, the general culture of hip hop places a heavy emphasis on staying up-to-date with the latest trends, and so there is incentive to mention cutting-edge consumer gadgets. On the other hand, technology tends to become obsolete, and when it does it becomes outdated and unfashionable more abruptly than old slang or clothing. As time moves forward, these lyrics will be received in two ways. People old enough to remember these things will say /"Haha, remember car phones?"/, while young people will say /"WTF is a 'beeper'?"/
+
+*/www.thug.com/ must have seemed futuristic and cutting-edge at the time of its release.* Way back in 1998, home Internet access was not widespread. And even the relatively few people who were "surfing the Web" and "cruising the Information Superhighway" were doing so via *AOL*, a service that was a little like Facebook in that it provided a shitty and heavily-controlled version of the real Internet. In contrast, /www.thug.com/ depicted a real web browser based on *Netscape Navigator* (charmingly renamed to =thugscape=). And of course, the title of the album is a *URL*, and the /www dot whatever dot com/ URL format was still novel and striking.
+
+Actually, the fact that the album's title is a URL makes it something of a *[[https://xkcd.com/327/][Bobby Tables]]*. I'm writing this in 2024, and it still causes screw-ups. I googled "www.thug.com" and there were at least two irregularities in the search results. First, the *Wikipedia* entry showed up with the title "Trick Daddy" instead of the album title:
+
+[[/assets/www.thug.com/google-wikipedia.png]]
+
+Second, the *Spotify* result displays "Something went wrong". Whoops!
+
+[[/assets/www.thug.com/google-spotify.png]]
+
+These problems are not present for any of Trick Daddy's other albums: /Book of Thugs/, /Thugs Are Us/, /Thug Holiday/, /Thug Matrimony/, /Back by Thug Demand/, or /Born a Thug, Still a Thug/.
+
+I'm sure there are other places where the *URL-as-title* causes problems. This blog post has the same title, and I am curious to see if any problems arise. (Really, that is the main reason for writing this post at all.)
+
+The URL still works[fn:1]. Today, unfortunately, it just redirects to the *Slip-N-Slide Records* home page. I would prefer to see a re-creation of an old-timey "web site" along the lines of */[[https://www.spacejam.com/1996/][Space Jam]]/*.
+
+Finally, it appears that story of Internet technology has come full circle: while researching this album, I came across some *[[https://www.hotnewhiphop.com/733566-trick-daddy-www-thug-com-album][in-the-wild AI-generated garbage]]*. Here are some of its profound insights:
+
+  - /The album explored Trick Daddy's experiences in a raw fashion. Trick Daddy has always shared his experiences, and he did so in raw fashion on the project./
+
+  - /Between the producers and featured artists, Trick Daddy enlisted a tight team of collaborators to create www.thug.com. The input of each collaborator built the album up to become what it is today./
+
+  - /With his lyrics, Trick Daddy explored themes such as street life, violence, and poverty, in many ways chronicling his own life. Even though it took a village, Trick Daddy was the star of the show./
+
+  - /While it’s possible that he may be done with music, www.thug.com, as well as his other works, will showcase his talents for ages to come./
+
+* Footnotes
+
+[fn:1] I write "the URL" without a hyperlink because Emacs Org mode is apparently confounded by the URL being same as the title of the post.
