@@ -1,0 +1,57 @@
+---
+title: "AI-generated music is really starting to hit"
+date: <span class="timestamp-wrapper"><span class="timestamp">&lt;2025-10-07 Tue&gt;</span></span>
+layout: post
+categories: 
+tags: 
+---
+
+> I have to admit it's getting better \\
+> A little better all the time
+> 
+> &#x2013; Lennon-McCartney
+
+Back in **2021**, somebody released an **[AI-generated album in the style of the Beatles](https://www.youtube.com/watch?v=a-kClj7YhRg)**. Well, maybe "album" is too strong a word, since it was only fifteen minutes long. Also it wasn't really "music" in the traditional sense. I don't know how to describe it exactly. Some sort of **music-like audio document**? It was all garbled and weird, definitely not something you would just put on and listen to like music.
+
+Still though, I was blown away. Despite everything, **it really sounded like the Beatles**. This was back before ChatGPT blew up, before AI came to mainstream attention. It was a major **wow moment** for me. I had had the usual skepticism: computers will never be able to make music, computers will never be able to do this or that, etc. Even thought it was just a crude proof of concept, this "album" (or whatever you want to call it) changed my mind. It made me think: *this technology is real, and even if today's AI-generated "music" is gibberish, tomorrow's may not be.*
+
+Now it is **2025**, and **full-blown real music is being produced by AI**. No need for scare quotes &#x2013; it is *actual, listenable* music. And I don't just mean formulaic genre junk like EDM, muzak, lofi beats, etc. I mean **genuinely novel, artistically interesting music**. And "here today" I would like to highlight a particular example: ***[The Beach Boys Sing The Beatles](https://www.youtube.com/watch?v=Dv0L5Cjn0og)***.
+
+![img](/assets/ai-generated-music/the-beach-boys-sing-the-beatles.jpg)
+
+I don't think the correct **vocabulary or conceptual framework** has yet been developed to discuss a work like this, so bear with me. Basically this is **an album in the style of the Beach Boys where all of the lyrics are from Beatles songs**. The songs are *not covers of Beach Boys songs* and they are *not covers of Beatles songs* &#x2013; they are "original" Beach Boys-like songs with seemingly random snippets of recognizable Beatles lyrics.
+
+I want to emphasize a few points.
+
+First, **this album is amazing. I cannot stop listening to it. It is so good.** It is sometimes claimed that **"real music"** must, by definition, be produced by humans. Well, if this isn't real music, *what have I been whistling to myself all week?* Am I some kind of cretin who cannot identify music? Or is it possible, on the other hand, that the human-creation criterion is just a pointless restriction on the definition of music?
+
+Second, we have these expressions *"in the style of the Beach Boys"* or *"Beach Boys-like"*. These **crummy circumlocutions** really sell it short: **this album sounds just like the Beach Boys**. And not just cornball striped-shirt surfboards-and-cars Beach Boys. I'm talking about late-60s Brian-at-his-peak fire-helmet Beach Boys. The whole gang is there: Carl, Mike, everyone. And they all sound great. "Carl" in particular has some moments that give me chills, matching his most soulful *Wild Honey* vocals.
+
+Third, it is difficult to figure out where to start discussing a work like this. For one thing, it is not obvious whether it even is a "work", or what kind of "work" it is. As I said before, I don't think the vocabulary or conceptual framework exists to discuss this cogently. **The technology is just too new and too dazzling, and traditional theories of art interpretation and criticism have not caught up.**
+
+But I would say on its face there are two way to discuss it. The first is **as what it actually is**, namely an AI-generated album from 2025. Who made it? How exactly was it made? To what extent was there human involvement in its production? I don't know the answers to any of these questions.
+
+The last question is especially important. In my own experience dealing in AI-generated stuff (images, code, etc), I find that **there is a lot of garbage to sort through**. It's rarely the case that you get what you want on the first try. Maybe you get something close to what you want, but not quite. The prompt-evaluate-retry loop can go on for a while. So while the output is "AI-generated", there may be a substantial **human-influenced selection bias** in what the final work ends up actually being.
+
+Digging a little further into the specific content of the album, I am most interested to know **how the particular Beatles lyrics were chosen**. By human? By AI? It is, to put it mildly, a "very strange" selection. If you are able to listen to it and identify all the songs used, I would call you a **Beatles expert**.
+
+Anyway, that is the first way to discuss this album. The second way to discuss it is as an **alternative history work**. It is sometimes claimed (again, by definition) that the work is not actually what is important about art; what is important instead is the **process that led to the creation of the work**.
+
+In this case, it is easy to imagine a **backstory** that could have led to the creation of this album. Consider: *The Beatles broke up in 1969. Brian Wilson, who had for years been driven by friendly competition with the Beatles, was inspired to take a bunch of random lines from Beatles songs and set them to new music. The album was released in 1970 to a combination of puzzlement and acclaim.*
+
+This is an **eminently plausible scenario**. It didn't happen, but it very well might have. And in that case, what would be the place of *BBSB* in the Beach Boys canon? How would it be understood in relation to *Pet Sounds* and *Smile*? How would the Beatles themselves have responded? Sure, *BBSB* doesn't have a real historical context, but that doesn't mean that these counterfactuals can't be pondered.
+
+(Things probably would have gone better for the Beach Boys if they had released this album. **It's a lot better than what actually did happen**: Brian went nuts, and the rest of the band, lacking any direction or vision, spent the early 70s releasing a string of dull, lifeless, forgettable albums.)
+
+Listen, I could go on all day about this album. In fact, I have been doing that &#x2013; my family and friends are sick of hearing about it. So I'll wrap this up with a takeaway message: **AI-generated music is here and it's real**. People are still saying that it's nothing but hype, it's just a big scam, it will always sound janky and unnatural and weird, it will never be "truly musical", etc. If you believe any of this, I strongly encourage you to listen to *The Beach Boys Sing The Beatles* and reassess.
+
+
+# Discussion Questions
+
+1.  Did you listen to *BBSB*? If so, what did you think?
+2.  Which Beatles lyrics were you able to identify? Which were you unable to identify?
+3.  Are there any obvious AI-artifacts? Anything that clearly sounds bad, off, unmusical, etc?
+4.  What are the "inspirations" behind the album? Are there any specific moments from the album that are clearly ripped off from existing songs?
+5.  To what extent is *BBSB* an "original" musical work? To what extent does it manage to sidestep the problem of "originality" by openly relying on preexisting Beach Boys sounds and Beatles lyrics?
+6.  If the Beach Boys actually had released *BBSB*, to what extent would it have been "original"?
+7.  Other than its lyrics, does music consist of anything apart from its pitches, rhythms, timbres, etc?
