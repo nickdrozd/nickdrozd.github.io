@@ -17,6 +17,8 @@ Still though, I was blown away. Despite everything, **it really sounded like the
 
 Now it is **2025**, and **full-blown real music is being produced by AI**. No need for scare quotes &#x2013; it is *actual, listenable* music. And I don't just mean formulaic genre junk like EDM, muzak, lofi beats, etc. I mean **genuinely novel, artistically interesting music**. And "here today" I would like to highlight a particular example: ***[The Beach Boys Sing The Beatles](https://www.youtube.com/watch?v=Dv0L5Cjn0og)***.
 
+🚩 **[Listen! (Youtube)](https://www.youtube.com/watch?v=Dv0L5Cjn0og)** 🚩
+
 ![img](/assets/ai-generated-music/the-beach-boys-sing-the-beatles.jpg)
 
 I don't think the correct **vocabulary or conceptual framework** has yet been developed to discuss a work like this, so bear with me. Basically this is **an album in the style of the Beach Boys where all of the lyrics are from Beatles songs**. The songs are *not covers of Beach Boys songs* and they are *not covers of Beatles songs* &#x2013; they are "original" Beach Boys-like songs with seemingly random snippets of recognizable Beatles lyrics.
