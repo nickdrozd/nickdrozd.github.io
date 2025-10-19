@@ -68,9 +68,9 @@ enum Expr<NumType, SymType> {
 }
 {% endhighlight %}
 
-[The language reference](https://doc.rust-lang.org/reference/types.html#recursive-types) also says that `union` can be recursive. But unions are already unsafe, so I didn't implement this new feature for them. Recursive unions are not just unsafe, but exotically unsafe, and probably shouldn't be messed with.
+[The Rust language reference](https://doc.rust-lang.org/reference/types.html#recursive-types) also says that `union` can be recursive. But unions are already unsafe, so I didn't implement this new feature for them. Recursive unions are not just unsafe, but exotically unsafe, and probably shouldn't be messed with.
 
-It might be argued that using `Self` in type defintiions is not idiomatic. Certainly it is not very common. But to me that just means it is a good language feature that is poorly publicized. I myself didn't learn about it until I had to update a recursive struct to be generic. I was annoyed that the `use_self` lint hadn't alread told me that `Self` could be used there. Hence the new feature.
+It might be argued that using `Self` in type definitions is not idiomatic. Certainly it is not very common. But to me that just means it is a good language feature that is poorly publicized. I myself didn't learn about it until I had to update a recursive struct to be generic. I was annoyed that the `use_self` lint hadn't alread told me that `Self` could be used there. Hence the new feature.
 
 But still, what if you have recursive type definitions and you enable the opt-in `use_self` lint and you really, really do not want to use `Self`? Well there is something for you too. Just add `recursive-self-in-type-definitions = false` to your Clippy configuration file and you won't have to hear about it.
 
