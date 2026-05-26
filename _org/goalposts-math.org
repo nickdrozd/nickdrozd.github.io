@@ -1,0 +1,45 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: Where are those goalposts? I'm sure I put them here somewhere
+#+date: <2026-05-26 Tue>
+#+author: Nick Drozd
+#+email: nicholasdrozd@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 30.0.50 (Org mode 9.6.6)
+#+cite_export:
+#+jekyll_layout: post
+#+jekyll_categories:
+#+jekyll_tags:
+
+It's been a few months since [[https://nickdrozd.github.io/2025/12/31/goalposts.html][I personally ran out of places to move the AI goalposts to]]. And the news keeps coming. An internal model from OpenAI *[[https://cdn.openai.com/pdf/74c24085-19b0-4534-9c90-465b8e29ad73/unit-distance-remarks.pdf][just refuted a long-standing mathematical conjecture]]*. For the first time, AI has produced an indisputably novel and significant piece of mathematical knowledge. Several years ago, a lot of people would have said, yes, this is definitely intelligence. But now that it has happened, *the goalposts need to get moved*. Where to?
+
+Before we do that, let's get straight about exactly what happened. The *unit distance problem*, first posed by Paul Erdős in 1946, asks: how can /N/ points in the plane be arranged so as to maximize the number of pairs of points separated by a distance of 1? We are looking for a /general method/ here, a function that takes /N/ as an argument and returns back a list of /N/ coordinates. Erdős himself devised what is known as the /square grid method/. This method produces slightly more than /N/ distance-1 pairs, although the amount greater than /N/ degrades as /N/ increases. Erdős conjectured that this was essentially the best possible method, and since that time generations of mathematicians attempted to prove that conjecture correct.
+
+Well, it turns out it wasn't correct. *The AI came up with a better method*, a method that does not degrade as /N/ increases. I'm not going to pretend to understand the details ([[https://x.com/SebastienBubeck/status/2057187978720719114][here is a good explanation]]). Something about constructing higher dimensional fields and then projecting back into the plane. What's important is that the conjecture was overturned by invention of a new method.
+
+And here is our first chance to move the goalposts. *The new result is not really a proof; it's "just" a new method for arranging points.* If it had been a proof that the square grid method was optimal, that would really be something. Such a proof would undoubtedly entail some serious theory; it could not but be illuminating. But a new method? It doesn't really "tell us" much. And despite how it is getting reported in the headlines, *the unit distance problem remains unsolved*. It is still unknown what the best method is: it could be the AI's new method, or it could be some other unknown method.
+
+That is how a mathematician might move the goalposts. What about the *[[https://garymarcus.substack.com/p/checking-the-math-behind-openai-and]["business perspective"]]*?
+
+#+begin_quote
+There are few markets smaller and less lucrative than professional academic mathematics... If this model was brilliant in some more general way, obviously the better examples would be solving problems or automating processes that directly and obviously generate massive revenue or savings for the specific types of companies they hope to make their customers.
+#+end_quote
+
+*Math: who cares?* According to this argument, math no longer counts for progress towards AI, because there is no money in it, and the only thing that matters is "massive revenue". This is a drastic step: *it moves the goalposts past math altogether*. Only practical impact matters, and math is eminently non-practical.
+
+But notice that *this contradicts the mathematical argument*. The business claim says that the result is merely theoretical and has no practical impact, but the math claim says that the result is merely practical and has no theoretical impact.
+
+Here I think *the math perspective is correct*. If it had gone the other way, and produced a proof that the square grid method was optimal, that would be a result of great theoretical interest but no practical value. Proving that a method is optimal doesn't help you do anything you couldn't do before; it just shows that you are stuck with the method you have. But a new method, even without a complete theory, actually does help to do things that couldn't be done before. Granted, arranging points in the plane is not an activity with much business impact. But the important takeaway is that *AI is capable of devising clever new methods*, and there is every reason to believe that some of these clever new methods might have business impact.
+
+(There is also the general retort that *cryptography relies on theoretical math and has massive business impact*, and therefore all advances in math could potentially have business impact. I don't know if the unit distance problem has any direct bearing on cryptographic questions, but I have a feeling we have not heard the last of this new construct-higher-dimensional-fields-and-project-back technique.)
+
+These math and business arguments are ways to move the goalposts. They accept the result, but downplay its significance. But what if we don't want to accept the result? *What about denial?* There are a few ways to do this.
+
+We can say: *in fact, it is not and cannot be a novel result*. AI cannot come up with anything new -- it can only recapitulate what was already in its training data. Therefore, this result must already exist in the literature in some obscure form, and the AI is merely reporting it (without attribution, of course). This is a nice theory because it makes a prediction that is *easily verifiable if true*, namely that the solution purportedly generated by the AI had already been published. Such a discovery would be shocking in its own right. I will update this post if that turns out to be the case.
+
+An extreme skeptic position says that AI is nothing but slop and that *this whole thing is an elaborate PR stunt*. Knowing that their technology is all smoke and mirrors, OpenAI secretly convened the world's top mathematicians and tasked them with solving an open problem. Then they simply lied and claimed the AI did it, all in the hopes of stoking hype for their upcoming IPO. Conspiracies aside, this explanation is *not literally impossible in terms of the math*. The unit distance problem was difficult enough to resist a solution for decades, but also not important enough to attract Manhattan Project levels of effort. So, I guess it's possible? If Timothy Gowers starts showing up in a [[https://www.youtube.com/watch?v=IUksG2txnxY][pink Cadillac]] then we'll have our answer.
